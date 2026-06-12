@@ -20,7 +20,7 @@
 #hz-agenda *{box-sizing:border-box;margin:0;padding:0}
 
 /* header */
-#hz-agenda .hd{display:flex;align-items:baseline;gap:22px;flex-wrap:wrap;padding:0 6vw;margin-bottom:8px}
+#hz-agenda .hd{display:flex;align-items:baseline;gap:22px;flex-wrap:wrap;padding:0 3vw;margin-bottom:8px}
 #hz-agenda .no{
   font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
   color:#EE164F;border:1px solid #EE164F;border-radius:30px;padding:7px 16px;white-space:nowrap;
@@ -29,10 +29,10 @@
   font-family:'Archivo Black',sans-serif;text-transform:uppercase;letter-spacing:.01em;
   font-size:clamp(40px,7vw,104px);line-height:.9;
 }
-#hz-agenda .sub{padding:0 6vw;font-size:clamp(15px,1.6vw,19px);max-width:60ch;opacity:.8;margin-bottom:34px}
+#hz-agenda .sub{padding:0 3vw;font-size:clamp(15px,1.6vw,19px);max-width:60ch;opacity:.8;margin-bottom:34px}
 
 /* day arc (sunrise → sunset rail) */
-#hz-agenda .rail{display:flex;align-items:center;gap:14px;padding:0 6vw;margin-bottom:22px;
+#hz-agenda .rail{display:flex;align-items:center;gap:14px;padding:0 3vw;margin-bottom:22px;
   font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#60032A}
 #hz-agenda .rail .line{flex:1;height:6px;border-radius:6px;
   background:linear-gradient(90deg,#FAA32B,#EE164F 55%,#B0093C)}
@@ -40,7 +40,7 @@
 #hz-agenda .rail .dot.end{background:#60032A}
 
 /* controls */
-#hz-agenda .ctr{display:flex;gap:10px;padding:0 6vw;margin-bottom:18px}
+#hz-agenda .ctr{display:flex;gap:10px;padding:0 3vw;margin-bottom:18px}
 #hz-agenda .ctr button{
   width:46px;height:46px;border-radius:50%;border:2px solid #1C0510;background:transparent;
   font-size:20px;line-height:1;cursor:pointer;color:#1C0510;
@@ -52,7 +52,7 @@
 
 /* horizontal track */
 #hz-agenda .track{
-  display:flex;gap:24px;padding:6px 6vw 30px;
+  display:flex;gap:24px;padding:6px 3vw 30px;
   overflow-x:auto;overflow-y:hidden;
   scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
   scrollbar-width:thin;scrollbar-color:#60032A #F7E7CE;cursor:grab;
@@ -85,7 +85,7 @@
 }
 
 /* end spacer so last card can center */
-#hz-agenda .end{flex:0 0 4vw}
+#hz-agenda .end{flex:0 0 1.5vw}
 
 @media (prefers-reduced-motion:reduce){
   #hz-agenda *{transition:none!important}

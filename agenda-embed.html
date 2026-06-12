@@ -1,0 +1,144 @@
+<!-- ============================================================
+     HORIZONS — AGENDA (self-contained embed for Splash)
+     Add a Custom HTML / Embed element on your page and paste ALL of this.
+     Horizontal scroll works via native CSS scroll-snap: swipe, trackpad,
+     drag the scrollbar, or use the arrow buttons. No JS required for
+     scrolling (optional drag-script at bottom enhances mouse dragging;
+     if Splash strips it, everything still works).
+     Everything is scoped under #hz-agenda so it can't touch the rest
+     of your page.
+     ============================================================ -->
+<div id="hz-agenda">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Zilla+Slab:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+#hz-agenda{
+  all:initial;display:block;box-sizing:border-box;width:100%;
+  background:#F7E7CE;color:#1C0510;font-family:'Zilla Slab',serif;
+  padding:70px 0 64px;position:relative;overflow:hidden;
+}
+#hz-agenda *{box-sizing:border-box;margin:0;padding:0}
+
+/* header */
+#hz-agenda .hd{display:flex;align-items:baseline;gap:22px;flex-wrap:wrap;padding:0 6vw;margin-bottom:8px}
+#hz-agenda .no{
+  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
+  color:#EE164F;border:1px solid #EE164F;border-radius:30px;padding:7px 16px;white-space:nowrap;
+}
+#hz-agenda h2{
+  font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:.01em;
+  font-size:clamp(40px,7vw,104px);line-height:.9;
+}
+#hz-agenda .sub{padding:0 6vw;font-size:clamp(15px,1.6vw,19px);max-width:60ch;opacity:.8;margin-bottom:34px}
+
+/* day arc (sunrise → sunset rail) */
+#hz-agenda .rail{display:flex;align-items:center;gap:14px;padding:0 6vw;margin-bottom:22px;
+  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#60032A}
+#hz-agenda .rail .line{flex:1;height:6px;border-radius:6px;
+  background:linear-gradient(90deg,#FAA32B,#EE164F 55%,#B0093C)}
+#hz-agenda .rail .dot{width:12px;height:12px;border-radius:50%;background:#FAA32B;flex:0 0 auto}
+#hz-agenda .rail .dot.end{background:#60032A}
+
+/* controls */
+#hz-agenda .ctr{display:flex;gap:10px;padding:0 6vw;margin-bottom:18px}
+#hz-agenda .ctr button{
+  width:46px;height:46px;border-radius:50%;border:2px solid #1C0510;background:transparent;
+  font-size:20px;line-height:1;cursor:pointer;color:#1C0510;
+  transition:background .2s,color .2s,transform .2s;font-family:'Zilla Slab',serif;
+}
+#hz-agenda .ctr button:hover{background:#1C0510;color:#FDF6EB;transform:translateY(-2px)}
+#hz-agenda .hint{margin-left:auto;align-self:center;font-family:'Space Mono',monospace;
+  font-size:10px;letter-spacing:.25em;text-transform:uppercase;opacity:.55}
+
+/* horizontal track */
+#hz-agenda .track{
+  display:flex;gap:24px;padding:6px 6vw 30px;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:#60032A #F7E7CE;cursor:grab;
+}
+#hz-agenda .track.drag{cursor:grabbing;scroll-snap-type:none}
+#hz-agenda .track::-webkit-scrollbar{height:8px}
+#hz-agenda .track::-webkit-scrollbar-track{background:rgba(96,3,42,.12);border-radius:8px}
+#hz-agenda .track::-webkit-scrollbar-thumb{background:#60032A;border-radius:8px}
+
+/* cards */
+#hz-agenda .card{
+  scroll-snap-align:center;flex:0 0 auto;width:min(360px,76vw);min-height:260px;
+  background:#FDF6EB;border:2px solid #1C0510;border-radius:24px;
+  box-shadow:9px 9px 0 #1C0510;padding:30px 28px 24px;
+  display:flex;flex-direction:column;gap:12px;transition:transform .3s cubic-bezier(.16,1,.3,1);
+}
+#hz-agenda .card:hover{transform:translateY(-8px) rotate(-.5deg)}
+#hz-agenda .card .t{font-family:'Space Mono',monospace;font-weight:700;font-size:15px;letter-spacing:.06em}
+#hz-agenda .card h3{font-family:'Anton',sans-serif;text-transform:uppercase;
+  font-size:clamp(26px,2.8vw,38px);line-height:.95}
+#hz-agenda .card p{font-size:15.5px;line-height:1.55;opacity:.82}
+#hz-agenda .card .foot{margin-top:auto;padding-top:16px;border-top:1px dashed currentColor;
+  display:flex;justify-content:space-between;font-family:'Space Mono',monospace;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;opacity:.7}
+
+/* break cards = gradient intermission */
+#hz-agenda .card.brk{
+  background:linear-gradient(120deg,#FAA32B,#EE164F 55%,#B0093C);
+  color:#FDF6EB;border-color:#60032A;box-shadow:9px 9px 0 #60032A;
+}
+
+/* end spacer so last card can center */
+#hz-agenda .end{flex:0 0 4vw}
+
+@media (prefers-reduced-motion:reduce){
+  #hz-agenda *{transition:none!important}
+  #hz-agenda .track{scroll-behavior:auto}
+}
+</style>
+
+<div class="hd">
+  <span class="no">Room 03 · The Day</span>
+  <h2>Sunrise to sunset</h2>
+</div>
+<p class="sub">One immersive day — built to flow from big-stage thinking into small-room exchange, then into connection. Times in GMT.</p>
+
+<div class="rail">
+  <span class="dot"></span><span>08:30</span><span class="line"></span><span>17:30</span><span class="dot end"></span>
+</div>
+
+<div class="ctr">
+  <button type="button" data-dir="-1" aria-label="Previous">←</button>
+  <button type="button" data-dir="1" aria-label="Next">→</button>
+  <span class="hint">Swipe / drag →</span>
+</div>
+
+<div class="track" id="hzTrack">
+  <article class="card"><span class="t">08:30</span><h3>Arrivals</h3><p>Coffee in hand, name on lanyard. The exhibition opens.</p><div class="foot"><span>Doors</span><span>GMT</span></div></article>
+  <article class="card"><span class="t">09:30</span><h3>Welcome Keynote</h3><p>The thesis for the day — where work is heading, and why it's ours to shape.</p><div class="foot"><span>Main stage</span><span>GMT</span></div></article>
+  <article class="card brk"><span class="t">11:00</span><h3>Coffee</h3><p>Refuel. Say hi to Bob.</p><div class="foot"><span>Lobby</span><span>GMT</span></div></article>
+  <article class="card"><span class="t">11:30</span><h3>Breakouts</h3><p>Choose your own adventure — deep dives into the topics that resonate.</p><div class="foot"><span>Breakout rooms</span><span>GMT</span></div></article>
+  <article class="card brk"><span class="t">12:30</span><h3>Lunch</h3><p>Long tables, longer conversations.</p><div class="foot"><span>Social</span><span>GMT</span></div></article>
+  <article class="card"><span class="t">13:30</span><h3>Breakouts II</h3><p>Second pass — switch tracks or go deeper.</p><div class="foot"><span>Breakout rooms</span><span>GMT</span></div></article>
+  <article class="card brk"><span class="t">14:30</span><h3>Coffee</h3><p>One more for the afternoon stretch.</p><div class="foot"><span>Lobby</span><span>GMT</span></div></article>
+  <article class="card"><span class="t">15:00</span><h3>Keynotes</h3><p>Closing perspectives — forward-looking insight on the future of work.</p><div class="foot"><span>Main stage</span><span>GMT</span></div></article>
+  <article class="card brk"><span class="t">16:30</span><h3>Drinks &amp; Bites</h3><p>Fireside conversations as the sun goes down.</p><div class="foot"><span>Social</span><span>GMT</span></div></article>
+  <article class="card"><span class="t">17:30</span><h3>Wrap Up</h3><p>Til next year :)</p><div class="foot"><span>Close</span><span>GMT</span></div></article>
+  <span class="end"></span>
+</div>
+
+<script>
+/* Optional enhancement — arrow buttons + click-drag.
+   Native swipe/trackpad/scrollbar already work without this. */
+(function(){
+  var root=document.getElementById('hz-agenda'); if(!root)return;
+  var track=root.querySelector('#hzTrack'); if(!track)return;
+  var step=function(){var c=track.querySelector('.card');return c?c.offsetWidth+24:340;};
+  root.querySelectorAll('.ctr button').forEach(function(b){
+    b.addEventListener('click',function(){
+      track.scrollBy({left:step()*parseInt(b.dataset.dir,10),behavior:'smooth'});
+    });
+  });
+  var down=false,sx=0,sl=0;
+  track.addEventListener('mousedown',function(e){down=true;track.classList.add('drag');sx=e.pageX;sl=track.scrollLeft;});
+  window.addEventListener('mouseup',function(){down=false;track.classList.remove('drag');});
+  track.addEventListener('mousemove',function(e){if(!down)return;e.preventDefault();track.scrollLeft=sl-(e.pageX-sx);});
+})();
+</script>
+</div>

@@ -20,16 +20,16 @@
 #hz-agenda *{box-sizing:border-box;margin:0;padding:0}
 
 /* header */
-#hz-agenda .hd{display:flex;align-items:baseline;gap:22px;flex-wrap:wrap;padding:0 3vw;margin-bottom:8px}
+#hz-agenda .hd{display:flex;flex-direction:column;align-items:center;gap:14px;padding:0 3vw;margin-bottom:10px;text-align:center}
 #hz-agenda .no{
   font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
   color:#EE164F;border:1px solid #EE164F;border-radius:30px;padding:7px 16px;white-space:nowrap;
 }
 #hz-agenda h2{
   font-family:'Archivo Black',sans-serif;text-transform:uppercase;letter-spacing:.01em;
-  font-size:clamp(40px,7vw,104px);line-height:.9;
+  font-size:clamp(30px,4vw,56px);line-height:.95;text-align:center;
 }
-#hz-agenda .sub{padding:0 3vw;font-size:clamp(15px,1.6vw,19px);max-width:60ch;opacity:.8;margin-bottom:34px}
+#hz-agenda .sub{padding:0 3vw;font-size:clamp(14px,1.3vw,17px);max-width:52ch;margin:0 auto 30px;opacity:.8;text-align:center}
 
 /* day arc (sunrise → sunset rail) */
 #hz-agenda .rail{display:flex;align-items:center;gap:14px;padding:0 3vw;margin-bottom:22px;

@@ -27,7 +27,7 @@
   /* ---- DOME: masked box holding gradient + photo. Scales from huge (full-bleed) to natural. ---- */
   .dome{
     position:absolute; left:50%; bottom:0;
-    width:min(135vh,120vw); aspect-ratio:71/37;
+    width:min(121vh,108vw); aspect-ratio:71/37;
     -webkit-mask:var(--dome) center/100% 100% no-repeat;
             mask:var(--dome) center/100% 100% no-repeat;
     z-index:2;
@@ -46,7 +46,7 @@
   /* ---- ARC TEXT: rotates along the TOP arc only, OUTSIDE the dome with margin. ---- */
   .arc{
     position:absolute; left:50%; bottom:0;
-    width:min(135vh,120vw); aspect-ratio:71/37;
+    width:min(121vh,108vw); aspect-ratio:71/37;
     transform:translateX(-50%);
     z-index:4; pointer-events:none; opacity:0; overflow:visible;
     transition:opacity .9s ease 1.0s;

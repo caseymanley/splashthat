@@ -52,8 +52,8 @@
 
 /* horizontal track */
 #hz-agenda .track{
-  display:flex;gap:24px;padding:6px 3vw 30px;
-  overflow-x:auto;overflow-y:hidden;
+  display:flex;gap:24px;padding:18px 3vw 30px;
+  overflow-x:auto;overflow-y:visible;
   scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
   scrollbar-width:thin;scrollbar-color:#60032A #F7E7CE;cursor:grab;
 }
@@ -65,23 +65,23 @@
 /* cards */
 #hz-agenda .card{
   scroll-snap-align:center;flex:0 0 auto;width:min(360px,76vw);min-height:260px;
-  background:#FDF6EB;border:2px solid #1C0510;border-radius:24px;
-  box-shadow:9px 9px 0 #1C0510;padding:30px 28px 24px;
+  background:#FDF6EB;border:0;border-radius:12px;
+  padding:30px 28px 24px;
   display:flex;flex-direction:column;gap:12px;transition:transform .3s cubic-bezier(.16,1,.3,1);
 }
 #hz-agenda .card:hover{transform:translateY(-8px) rotate(-.5deg)}
-#hz-agenda .card .t{font-family:'Space Mono',monospace;font-weight:700;font-size:15px;letter-spacing:.06em}
+#hz-agenda .card .t{font-family:'Sentinel','Domine',serif;font-weight:600;font-size:16px;letter-spacing:.01em}
 #hz-agenda .card h3{font-family:'Archivo Black',sans-serif;text-transform:uppercase;
   font-size:clamp(26px,2.8vw,38px);line-height:.95}
 #hz-agenda .card p{font-size:15.5px;line-height:1.55;opacity:.82}
 #hz-agenda .card .foot{margin-top:auto;padding-top:16px;border-top:1px dashed currentColor;
-  display:flex;justify-content:space-between;font-family:'Space Mono',monospace;
-  font-size:10px;letter-spacing:.22em;text-transform:uppercase;opacity:.7}
+  display:flex;justify-content:space-between;font-family:'Sentinel','Domine',serif;
+  font-size:11px;letter-spacing:.04em;text-transform:uppercase;opacity:.7}
 
 /* break cards = gradient intermission */
 #hz-agenda .card.brk{
   background:linear-gradient(120deg,#FAA32B,#EE164F 55%,#B0093C);
-  color:#FDF6EB;border-color:#60032A;box-shadow:9px 9px 0 #60032A;
+  color:#FDF6EB;border:0;
 }
 
 /* end spacer so last card can center */
@@ -94,7 +94,6 @@
 </style>
 
 <div class="hd">
-  <span class="no">Room 03 · The Day</span>
   <h2>Sunrise to sunset</h2>
 </div>
 <p class="sub">One immersive day — built to flow from big-stage thinking into small-room exchange, then into connection. Times in GMT.</p>

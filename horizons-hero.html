@@ -6,114 +6,87 @@
 <title>Horizons — Hero</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
-  :root{
-    --orange:#FAA32B; --cherry:#EE164F; --wine:#B0093C;
-    --deep:#3D001A; --ink:#1C0510; --cream:#FDF6EB;
-    --grad:linear-gradient(135deg,#FAA32B 0%,#EE164F 52%,#B0093C 100%);
-    --dome:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA3MSAzNycgcHJlc2VydmVBc3BlY3RSYXRpbz0nbm9uZSc+PHBhdGggZD0nTTQyLjkyMjIgMC45MjkyMzRDNDAuNDE1NCAwLjM2MDEwMiAzNy44MTQxIDAuMDYyMjE4NCAzNS4xMzQxIDAuMDYyMjA2MUMzMi40NTEzIDAuMDYyMjMwMiAzMC42MjU0IC0wLjIwMDU1NyAyOC4xMzcgMC4zNTM5NTRMMjQuOTE2MyAwLjkyOTc5NEM5LjQ0NDk1IDQuMzg3NzQgMC40NTg2OTYgMTguMDY0MyAtMC4wMDA5OTMwNTQgMzQuODcxMlYzNC44NzUxQy0wLjAyMDAxNjIgMzUuNjk3NyAwLjY1NzMzOSAzNi4zNTQzIDEuNDgwMjIgMzYuMzU0M0g2Ny45ODI1QzY5LjE5NjkgMzYuMzU0MyA3MC4xNzk5IDM1LjM3NzggNzAuMTUxNyAzNC4xNjM4TDcwLjE1MTIgMzQuMTU5OVYzMS4zMjJDNjguMDIzOCAxNS4yMTg3IDU4LjI1MTIgNC4zNTc0OCA0Mi45MjI0IDAuOTI5ODY5QzQyLjkyMjMgMC45Mjk4MzcgNDIuOTIyMiAwLjkyOTY1NiA0Mi45MjIzIDAuOTI5NTUxQzQyLjkyMjQgMC45Mjk0NDYgNDIuOTIyNCAwLjkyOTI2NyA0Mi45MjIyIDAuOTI5MjM0WicgZmlsbD0nJTIzZmZmJy8+PC9zdmc+");
-  }
+
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{background:var(--deep);height:100%}
-  body{font-family:'Space Mono',monospace;-webkit-font-smoothing:antialiased;overflow:hidden}
+  html,body{height:100%;background:#3D001A}
+  body{font-family:'Space Mono',monospace;overflow:hidden;-webkit-font-smoothing:antialiased}
 
-  .stage{position:relative;height:100vh;width:100%;overflow:hidden;background:var(--deep)}
+  .stage{position:relative;width:100%;height:100vh;overflow:hidden;background:#3D001A}
 
-  /* full-frame gradient backdrop: guarantees a true edge-to-edge open state.
-     Fades out on collapse so only the masked dome remains. */
-  .backdrop{position:absolute;inset:0;z-index:1;background:var(--grad);
-    transition:opacity .9s ease .35s}
+  /* ---- VIDEO: fills the frame ---- */
+  .video{position:absolute;inset:0;z-index:0}
+  .video video{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* ============================================================
+     SAND TINT + DOT-MATRIX TEXTURE  (delicate + tight)
+     Over the video, under the gradient/logo. Deliberately light.
+     KNOBS:
+       1. flat wash -> background-color alpha (.05). 0 = dots only.
+       2. dot tint  -> rgba(...) alpha (.30). The visible mesh.
+       3. density   -> background-size (4px). Smaller = tighter.
+       4. dot size  -> "0 .6px" / "1px" stops. Bigger = fatter dots.
+     ============================================================ */
+  .tint{
+    position:absolute;inset:0;z-index:1;pointer-events:none;
+    background-color:rgba(247,231,206,.05);
+    background-image:radial-gradient(circle at center,
+                     rgba(247,231,206,.30) 0 .6px, transparent 1px);
+    background-size:4px 4px;
+    /* OPTIONAL integration: mix-blend-mode:soft-light;  (or overlay) */
+  }
+
+  /* ============================================================
+     LOAD-IN: full-frame sunset gradient covers everything, then
+     fades out (revealing video + mesh) while the logo scales back
+     from large to its resting size. Fires ~650ms after load.
+     ============================================================ */
+  .backdrop{
+    position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:linear-gradient(135deg,#FAA32B 0%,#EE164F 52%,#B0093C 100%);
+    transition:opacity 1.1s ease .35s;
+  }
   .is-collapsed .backdrop{opacity:0}
 
-  /* ---- DOME: masked box holding gradient + photo. Scales from huge (full-bleed) to natural. ---- */
-  .dome{
-    position:absolute; left:50%; bottom:0;
-    width:min(121vh,108vw); aspect-ratio:71/37;
-    -webkit-mask:var(--dome) center/100% 100% no-repeat;
-            mask:var(--dome) center/100% 100% no-repeat;
-    z-index:2;
-    transform:translateX(-50%) translateY(0) scale(2.2);
-    transform-origin:50% 100%;
-    transition:transform 1.5s cubic-bezier(.65,0,.35,1);   /* ease-in-out */
-    will-change:transform;
-  }
-  .is-collapsed .dome{ transform:translateX(-50%) translateY(0) scale(1) }
-  .dome .layer{position:absolute;inset:0}
-  .grad-layer{background:var(--grad)}
-  .video-layer{opacity:0;transition:opacity 1.2s ease 1.2s}
-  .is-collapsed .video-layer{opacity:1}
-  .video-layer video{width:100%;height:100%;object-fit:cover;display:block}
-
-  /* ---- ARC TEXT: rotates along the TOP arc only, OUTSIDE the dome with margin. ---- */
-  .arc{
-    position:absolute; left:50%; bottom:0;
-    width:min(121vh,108vw); aspect-ratio:71/37;
-    transform:translateX(-50%);
-    z-index:4; pointer-events:none; opacity:0; overflow:visible;
-    transition:opacity .9s ease 1.0s;
-  }
-  .is-collapsed .arc{opacity:1}
-  /* spinner group rotates around the dome's base-center (= rotation origin of the arc) */
-  .arc-spin{transform-box:view-box;transform-origin:35.5px 36px;animation:spin 90s linear infinite;animation-delay:-7.5s}
-  @keyframes spin{to{transform:rotate(-360deg)}}
-  .arc text{
-    font-family:'Gotham Bold','Gotham','Helvetica Neue',Arial,sans-serif;
-    font-weight:700; letter-spacing:.26em; text-transform:uppercase;
-    font-size:1.35px; fill:var(--cream);
-  }
-
-  /* ---- LOGO: centered start; settles centered in dome, ~2x bigger than before ---- */
+  /* ---- LOGO: starts big over the gradient, settles back on collapse ---- */
   .logo{
-    position:absolute; left:50%; top:50%; z-index:5;
-    width:min(58vw,720px); height:auto;
-    transform:translate(-50%,-50%);
-    transition:transform 1.4s cubic-bezier(.65,0,.35,1), width 1.4s cubic-bezier(.65,0,.35,1);
-    filter:drop-shadow(0 6px 40px rgba(0,0,0,.28));
+    position:absolute;left:50%;top:50%;z-index:3;
+    width:min(64vw,760px);height:auto;
+    transform:translate(-50%,-50%) scale(1.32);
+    transition:transform 1.4s cubic-bezier(.65,0,.35,1);
+    filter:drop-shadow(0 6px 36px rgba(28,5,16,.38));
     will-change:transform;
   }
   .logo svg{width:100%;height:auto;display:block}
-  .is-collapsed .logo{
-    width:min(62vw,720px);                       /* ~2x the prior 40vw/460px */
-    transform:translate(-50%,calc(-50% + 20vh));
-  }
+  .is-collapsed .logo{transform:translate(-50%,-50%) scale(1)}
 
+  /* ---- CTA: fades up on collapse. Delete block + <a> to use nav Register instead. ---- */
   .cta{
-    position:absolute; z-index:7; left:50%; bottom:9vh; transform:translateX(-50%) translateY(12px);
-    opacity:0; transition:opacity .7s ease 1.35s, transform .7s ease 1.35s;
-    background:var(--ink); color:var(--cream); font-family:'Space Mono',monospace; font-weight:700;
-    text-transform:uppercase; letter-spacing:.16em; font-size:14px;
-    border:0; border-radius:40px; padding:16px 34px; cursor:pointer;
-    box-shadow:0 12px 30px rgba(28,5,16,.4);
+    position:absolute;left:50%;bottom:9vh;z-index:4;
+    transform:translateX(-50%) translateY(12px);opacity:0;
+    transition:opacity .7s ease 1.35s, transform .7s ease 1.35s;
+    background:#1C0510;color:#FDF6EB;text-decoration:none;
+    font-family:'Space Mono',monospace;font-weight:700;
+    text-transform:uppercase;letter-spacing:.16em;font-size:14px;
+    padding:16px 34px;border-radius:40px;box-shadow:0 12px 30px rgba(28,5,16,.4);
   }
-  .is-collapsed .cta{opacity:1; transform:translateX(-50%) translateY(0)}
+  .is-collapsed .cta{opacity:1;transform:translateX(-50%) translateY(0)}
+  .cta:hover{box-shadow:0 18px 40px rgba(28,5,16,.5)}
 
   @media (prefers-reduced-motion:reduce){
-    .dome,.logo,.photo-layer,.arc,.cta{transition:none!important}
-    .arc-spin{transform-box:view-box;transform-origin:35.5px 36px;animation:spin 90s linear infinite;animation-delay:-7.5s}
+    .backdrop,.logo,.cta{transition:none!important}
   }
 </style>
 </head>
 <body>
   <div class="stage" id="stage">
 
-    <div class="backdrop"></div>
-
-    <div class="dome">
-      <div class="layer grad-layer"></div>
-      <div class="layer video-layer">
-        <video src="https://birdasaurus.com/horizons/horizons_hero.mp4"
-               muted autoplay loop playsinline preload="auto"></video>
-      </div>
+    <div class="video">
+      <video src="https://birdasaurus.com/horizons/horizons_hero.mp4"
+             muted autoplay loop playsinline preload="auto"></video>
     </div>
 
-    <!-- arc text: path sits OUTSIDE the dome rim (radius 40 vs dome ~35) for margin; top arc only -->
-    <svg class="arc" viewBox="0 0 71 37" preserveAspectRatio="none" aria-hidden="true">
-      <defs>
-        <path id="rim" fill="none" d="M 35.5 -3 A 39 39 0 1 1 35.5 75 A 39 39 0 1 1 35.5 -3"/>
-      </defs>
-      <g class="arc-spin">
-        <text><textPath href="#rim" startOffset="0">WEDNESDAY · NOV 18 2026 · 08:30–17:30 GMT · PROTEIN STUDIOS SHOREDITCH ·&#160;WEDNESDAY · NOV 18 2026 · 08:30–17:30 GMT · PROTEIN STUDIOS SHOREDITCH ·&#160;WEDNESDAY · NOV 18 2026 · 08:30–17:30 GMT · PROTEIN STUDIOS SHOREDITCH ·&#160;WEDNESDAY · NOV 18 2026 · 08:30–17:30 GMT · PROTEIN STUDIOS SHOREDITCH ·&#160;WEDNESDAY · NOV 18 2026 · 08:30–17:30 GMT · PROTEIN STUDIOS SHOREDITCH ·&#160;WEDNESDAY · NOV 18 2026 · 08:30–17:30 GMT · PROTEIN STUDIOS SHOREDITCH ·&#160;</textPath></text>
-      </g>
-    </svg>
+    <div class="tint"></div>
+    <div class="backdrop"></div>
 
     <div class="logo" aria-label="Horizons">
       <svg viewBox="0 0 1136 310" xmlns="http://www.w3.org/2000/svg"><path d="M333.009 28.6219C334.438 27.935 337.487 27.935 342.57 27.9075C352.461 27.9075 369.825 27.9075 381.804 27.9075C393.976 27.9075 404.966 27.6877 416.862 30.1057C432.358 33.2656 443.101 39.5578 450.272 51.4553C461.234 70.4693 457.113 97.9738 439.034 111.108C431.122 116.85 429.528 120.258 434.446 127.374C440.271 136.029 451.151 151.224 456.316 158.835C457.415 160.731 459.366 162.819 458.596 164.853C457.882 166.062 453.156 165.814 448.651 165.869C441.452 165.869 430.847 165.732 423.456 165.43C417.219 165.512 414.06 162.957 410.873 157.956C406.284 151.416 398.784 140.068 394.003 133.337C391.997 130.589 389.662 128.034 386.667 126.577C380.211 123.033 371.309 125.148 370.952 133.447C370.265 140.233 371.007 152.021 370.402 158.341C370.21 161.803 368.864 165.787 365.072 165.704C355.346 165.43 346.664 165.32 339.411 165.43C333.504 165.155 331.333 166.446 331.443 160.978C331.443 141.387 331.36 65.6884 331.443 31.9741C331.525 30.6552 331.635 29.3638 332.817 28.6769L332.981 28.5945L333.009 28.6219ZM398.262 93.9621C404.581 93.3027 411.669 90.8573 414.884 85.142C418.566 78.7124 416.835 69.5626 410.543 65.3861C403.097 60.3029 393.014 61.0173 382.711 60.9348C372.408 60.7975 370.182 61.1547 370.732 73.1621C371.144 78.7674 369.578 88.3294 372.133 92.4234C375.98 95.6382 382.409 93.9072 389.113 94.3468C391.997 94.3468 394.937 94.2919 397.767 94.0171L398.289 93.9621H398.262Z" fill="white"/>
@@ -131,14 +104,17 @@
 <path d="M892.371 206.868C903.005 202.246 919.507 203.282 936.696 203.769C944.552 203.992 951.371 203.795 959.08 206.035C963.17 207.226 966.602 209.203 969.746 212.857C973.689 217.435 973.763 223.981 974.217 230.3H974.221C974.781 238.117 975.182 255.207 974.107 262.973C972.942 271.391 970.48 279.262 963.816 281.374C959.415 282.77 957.548 282.146 951.117 283.449C949.821 288.35 953.378 291.821 952.819 293.565C952.26 295.308 944.628 293.355 942.313 291.956C939.997 290.559 934.688 288.312 932.776 285.254C927.968 285.238 914.104 285.085 909.526 284.524C899.92 283.348 889.76 283.378 885.186 273.637C881.784 266.398 881.895 255.009 881.451 247.256C880.823 236.323 881.548 210.417 892.371 206.868ZM906.578 219.547C904.822 219.217 896.699 219.325 896.231 220.215C895.823 221.425 895.95 224.281 895.978 226.34C896.063 236.836 896.996 249.569 897.142 259.695C897.248 262.774 897.323 269.112 897.324 269.449C897.332 270.504 897.45 270.784 898.499 270.899C901.773 271.081 905.786 270.829 909.071 270.921C910.761 271.027 909.945 267.885 910.138 266.632C910.172 263.831 910.052 259.314 909.849 256.9C909.715 251.386 908.229 251.446 913.836 251.166C914.812 251.09 919.409 250.928 922.115 250.866C923.852 251.001 925.202 250.159 925.81 251.782H925.814C926.183 254.405 926.461 265.951 926.856 269.629C926.915 270.415 927.138 270.857 927.93 270.841C928.56 270.899 929.702 270.928 931.322 270.928C933.24 270.936 935.17 270.881 936.77 270.873C939.516 270.897 938.194 265.726 938.222 262.885C937.957 257.404 937.789 243.888 937.488 237.711C937.448 236.413 937.269 226.367 937.169 224.089C937.117 223.115 937.304 220.926 936.984 220.237C936.599 219.61 934.885 219.418 933.901 219.487C931.363 219.487 929.262 219.513 927.236 219.843C925.43 220.134 924.745 220.825 924.709 222.387C924.698 222.856 924.733 225.919 924.771 229.16C924.805 232.162 924.858 235.349 924.864 237.042C924.798 238.741 921.904 237.864 920.273 238.077C917.602 238.019 910.834 238.243 909.494 238.313C908.673 238.291 908.595 237.588 908.426 236.784C908.051 233.095 907.607 227.409 907.43 223.535C907.368 221.417 907.261 219.657 906.578 219.547ZM958.724 239.633C958.932 236.859 955.874 237.451 953.752 237.367H953.75C952.113 237.367 950.495 237.401 948.931 237.4C947.956 237.44 947.504 237.486 947.556 238.327C947.032 248.871 947.487 255.609 947.305 265.571C947.15 272.335 947.347 270.352 953.251 270.733C954.571 270.754 957.112 271.013 958.133 270.497C958.646 270.149 958.517 269.589 958.642 268.832C958.599 261.503 958.629 259.232 958.677 253.508L958.729 246.32L958.732 246.322C958.732 243.89 958.669 242.161 958.724 239.633ZM953.105 218.482C952.227 218.482 951.323 218.646 950.425 218.97C949.935 219.148 949.486 219.381 949.09 219.67C949.084 219.673 949.079 219.679 949.072 219.682C947.203 221.031 946.195 223.278 946.443 225.554C946.676 227.674 947.946 229.376 949.936 230.225C949.942 230.225 949.946 230.23 949.951 230.232C950.885 230.628 952.034 230.856 953.105 230.856C954.065 230.856 955.439 230.677 956.519 229.828C958.532 228.239 959.267 226.431 958.973 223.788H958.971C958.618 220.615 956.261 218.482 953.105 218.482Z" fill="white"/></svg>
     </div>
 
-    <button class="cta" onclick="parent.postMessage({type:'horizons-register'},'*')">Register Now</button>
+    <!-- SWAP href for the real register URL/anchor before launch.
+         target="_top" breaks out of the iframe. -->
+    <a class="cta" href="#" target="_top">Register</a>
+
   </div>
 
 <script>
-  // AUTOPLAY: sequence fires shortly after load. No scroll dependency.
+  /* AUTOPLAY load-in: gradient fades + logo scales back ~650ms after load. */
   var stage=document.getElementById('stage');
   window.addEventListener('load',function(){
-    setTimeout(function(){ stage.classList.add('is-collapsed'); }, 650);
+    setTimeout(function(){ stage.classList.add('is-collapsed'); },650);
   });
 </script>
 </body>

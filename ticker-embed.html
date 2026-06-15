@@ -1,0 +1,69 @@
+<!-- ============================================================
+     HORIZONS — TICKER (self-contained iframe for Splash)
+     Infinite side-scroll of date / time / location, separated by the
+     hand-drawn horizon sun. Scoped under #hz-tk (all:initial reset) so
+     it can't touch the rest of the page. Pure CSS scroll, no JS needed.
+     Embed via an iframe element pointing at the hosted URL (see README
+     snippet). Pauses on hover; respects reduced-motion.
+     ============================================================ -->
+<div id="hz-tk">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+
+#hz-tk{
+  all:initial;display:block;box-sizing:border-box;width:100%;
+  background:#3D001A;overflow:hidden;position:relative;
+  /* horizon hairlines top + bottom (gradient) */
+  border-style:solid;border-width:2px 0;
+  border-image:linear-gradient(90deg,#FAA32B,#EE164F 55%,#B0093C) 1;
+}
+#hz-tk *{box-sizing:border-box;margin:0;padding:0}
+
+/* the moving rail = two identical sequences back-to-back.
+   translateX(-50%) advances exactly one sequence -> seamless loop.
+   KNOB: animation duration (38s). Higher = slower scroll. */
+#hz-tk .track{
+  display:flex;width:max-content;align-items:center;
+  animation:hz-tkscroll 38s linear infinite;
+  will-change:transform;
+}
+#hz-tk .seq{display:flex;align-items:center;flex:0 0 auto}
+
+#hz-tk .item{
+  font-family:'Archivo Black',sans-serif;text-transform:uppercase;
+  color:#FDF6EB;white-space:nowrap;line-height:1;
+  font-size:clamp(18px,2.4vw,32px);letter-spacing:.02em;
+  padding:20px 0;margin:0 .5em;
+}
+/* the horizon sun separator (scales with the text via em) */
+#hz-tk .sun{
+  flex:0 0 auto;margin:0 .5em;
+  font-size:clamp(18px,2.4vw,32px);
+  width:1.55em;height:.8em;
+  background:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA3MSAzNyc+PHBhdGggZD0nTTQyLjkyMjIgMC45MjkyMzRDNDAuNDE1NCAwLjM2MDEwMiAzNy44MTQxIDAuMDYyMjE4NCAzNS4xMzQxIDAuMDYyMjA2MUMzMi40NTEzIDAuMDYyMjMwMiAzMC42MjU0IC0wLjIwMDU1NyAyOC4xMzcgMC4zNTM5NTRMMjQuOTE2MyAwLjkyOTc5NEM5LjQ0NDk1IDQuMzg3NzQgMC40NTg2OTYgMTguMDY0MyAtMC4wMDA5OTMwNTQgMzQuODcxMlYzNC44NzUxQy0wLjAyMDAxNjIgMzUuNjk3NyAwLjY1NzMzOSAzNi4zNTQzIDEuNDgwMjIgMzYuMzU0M0g2Ny45ODI1QzY5LjE5NjkgMzYuMzU0MyA3MC4xNzk5IDM1LjM3NzggNzAuMTUxNyAzNC4xNjM4TDcwLjE1MTIgMzQuMTU5OVYzMS4zMjJDNjguMDIzOCAxNS4yMTg3IDU4LjI1MTIgNC4zNTc0OCA0Mi45MjI0IDAuOTI5ODY5QzQyLjkyMjMgMC45Mjk4MzcgNDIuOTIyMiAwLjkyOTY1NiA0Mi45MjIzIDAuOTI5NTUxQzQyLjkyMjQgMC45Mjk0NDYgNDIuOTIyNCAwLjkyOTI2NyA0Mi45MjIyIDAuOTI5MjM0WicgZmlsbD0ndXJsKCNnKScvPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0nZycgeDE9JzM1LjA3ODcnIHkxPSczNi4zNTQzJyB4Mj0nMzUuMDc4NycgeTI9JzAnIGdyYWRpZW50VW5pdHM9J3VzZXJTcGFjZU9uVXNlJz48c3RvcCBzdG9wLWNvbG9yPScjRkZBMzJCJy8+PHN0b3Agb2Zmc2V0PScwLjc1JyBzdG9wLWNvbG9yPScjRUUxNjRGJy8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PC9zdmc+") no-repeat center/contain;
+}
+
+#hz-tk:hover .track{animation-play-state:paused}
+
+@keyframes hz-tkscroll{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+@media (prefers-reduced-motion:reduce){
+  #hz-tk .track{animation:none;justify-content:center}
+}
+</style>
+
+<div class="track">
+  <div class="seq">
+    <span class="item">Wednesday 18 Nov 2026</span><span class="sun"></span>
+    <span class="item">08:30&#8211;17:30 GMT</span><span class="sun"></span>
+    <span class="item">Protein Studios, Shoreditch</span><span class="sun"></span>
+  </div>
+  <div class="seq" aria-hidden="true">
+    <span class="item">Wednesday 18 Nov 2026</span><span class="sun"></span>
+    <span class="item">08:30&#8211;17:30 GMT</span><span class="sun"></span>
+    <span class="item">Protein Studios, Shoreditch</span><span class="sun"></span>
+  </div>
+</div>
+</div>

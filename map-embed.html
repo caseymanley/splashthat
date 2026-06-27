@@ -1,0 +1,263 @@
+<!doctype html>
+<!-- ============================================================
+     HORIZONS — "GETTING HERE" MAP (self-contained iframe)
+     Host on GitHub Pages (like the hero/ticker) + embed via <iframe src="...">.
+     Suggested iframe height: ~520px desktop / ~440px mobile.
+
+     Engine: MapLibre GL + OpenFreeMap vector tiles (free, no API key) with a
+     fully custom Horizons style (cream bg / sand buildings / orange streets).
+     Routing: Valhalla pedestrian (FOSSGIS public, free, no key) draws REAL
+     street-following walking paths; falls back to a straight curve if the
+     routing service is unreachable.
+
+     EDIT POINTS: VENUE / STATIONS constants in the script (coords approximate).
+     Palette knobs: the COLORS object + the style() layers. No shadows anywhere.
+     ============================================================ -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Horizons — Getting Here</title>
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Domine:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wine:#3D001A; --wine2:#60032A; --cherry:#EE164F; --orange:#FAA32B;
+    --cream:#FDF6EB; --sand:#F7E7CE; --ink:#1C0510; --cocoa:#B0093C;
+    --grad:linear-gradient(135deg,#FAA32B,#EE164F 55%,#B0093C);
+  }
+  html,body{height:100%;margin:0}
+  body{background:var(--cream);font-family:'Domine',serif;-webkit-font-smoothing:antialiased}
+  .frame{position:relative;height:100%;min-height:420px;overflow:hidden;
+    border:1px solid rgba(61,0,26,.18)}
+  #hzmap{position:absolute;inset:0;background:var(--cream)}
+
+  /* ---- VENUE: horizon sun over the pin + cream "destination" chip ---- */
+  .venue-wrap{display:flex;flex-direction:column;align-items:center;width:240px;pointer-events:none}
+  .venue-wrap .sun{width:42px;height:21px;border-radius:21px 21px 0 0;
+    background:linear-gradient(0deg,var(--cocoa),var(--cherry) 55%,var(--orange));
+    position:relative;z-index:2}
+  .venue-wrap .dot{width:11px;height:11px;border-radius:50%;background:var(--cream);
+    border:2.5px solid var(--cherry);margin-top:-1px;position:relative;z-index:3}
+  .venue-wrap .tag{margin-top:7px;background:var(--cream);color:var(--wine);
+    border:1.5px solid var(--wine);border-radius:10px;padding:6px 12px;
+    text-align:center;white-space:nowrap}
+  .venue-wrap .tag .nm{display:block;font-family:'Archivo Black',sans-serif;
+    text-transform:uppercase;font-size:12px;letter-spacing:.03em;line-height:1}
+  .venue-wrap .tag .ad{display:block;margin-top:3px;font-family:'Space Mono',monospace;
+    font-size:9px;letter-spacing:.02em;color:var(--wine2)}
+
+  /* ---- STATIONS: gradient diamond + dark legible chip ---- */
+  .stn-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;width:170px;pointer-events:none}
+  .stn-wrap .dia{width:16px;height:16px;transform:rotate(45deg);border-radius:3px;
+    background:var(--grad);border:2px solid var(--cream)}
+  .stn-wrap .lab{background:var(--wine);border:1.5px solid var(--cream);border-radius:8px;
+    padding:5px 10px;text-align:center;white-space:nowrap;line-height:1.15}
+  .stn-wrap .lab .nm{display:block;font-family:'Space Mono',monospace;font-weight:700;
+    font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--cream)}
+  .stn-wrap .lab .mn{display:block;margin-top:1px;font-family:'Space Mono',monospace;
+    font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--orange)}
+
+  /* ---- legend (bottom-left) ---- */
+  .legend{position:absolute;bottom:14px;left:14px;z-index:5;background:var(--wine);
+    border:1.5px solid rgba(253,246,235,.3);border-radius:11px;padding:11px 14px;
+    display:flex;flex-direction:column;gap:9px}
+  .legend .row{display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;
+    font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--cream);opacity:.95}
+  .legend .g-sun{width:18px;height:9px;border-radius:9px 9px 0 0;
+    background:linear-gradient(0deg,var(--cocoa),var(--cherry) 55%,var(--orange));flex:0 0 auto}
+  .legend .g-dia{width:12px;height:12px;transform:rotate(45deg);border-radius:2px;
+    background:var(--grad);border:1px solid var(--cream);flex:0 0 auto;margin:0 3px}
+  .legend .g-line{width:20px;border-top:3px dotted var(--cherry);flex:0 0 auto}
+
+  /* ---- MapLibre chrome restyle (no shadows) ---- */
+  .maplibregl-ctrl-group{background:var(--wine)!important;border:1.5px solid rgba(253,246,235,.3)!important;
+    box-shadow:none!important;border-radius:8px!important;overflow:hidden}
+  .maplibregl-ctrl-group button{background:var(--wine)!important;width:32px!important;height:32px!important}
+  .maplibregl-ctrl-group button+button{border-top:1px solid rgba(253,246,235,.18)!important}
+  .maplibregl-ctrl-group button:hover{background:var(--cherry)!important}
+  .maplibregl-ctrl-icon{filter:invert(1)}              /* + / − glyphs -> cream */
+  .maplibregl-ctrl-attrib{background:rgba(61,0,26,.82)!important;box-shadow:none!important}
+  .maplibregl-ctrl-attrib,.maplibregl-ctrl-attrib a{color:var(--cream)!important;
+    font-family:'Space Mono',monospace!important;font-size:9px!important}
+  .maplibregl-ctrl-attrib a{color:var(--orange)!important}
+
+  @media (max-width:560px){ .legend{padding:9px 11px;gap:7px} }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div id="hzmap"></div>
+    <div class="legend">
+      <div class="row"><span class="g-sun"></span> Venue</div>
+      <div class="row"><span class="g-dia"></span> Station</div>
+      <div class="row"><span class="g-line"></span> Walking route</div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script>
+  (function(){
+    /* ---- EDIT HERE: venue + stations (coords approximate) ---- */
+    var VENUE = {name:'Protein Studios', addr:'31 New Inn Yard, EC2A 3EY', lat:51.52447, lng:-0.07876};
+    var STATIONS = [
+      {name:'Liverpool Street',       lat:51.51807, lng:-0.08214},
+      {name:'Shoreditch High Street', lat:51.52344, lng:-0.07566},
+      {name:'Old Street',             lat:51.52589, lng:-0.08782}
+    ];
+
+    /* ---- palette ---- */
+    var C = {bg:'#FDF6EB', building:'#F7E7CE', buildingEdge:'#EAD7B5', water:'#EFE0C9',
+             park:'#F3E6CE', street:'#E89A4E', streetMainOp:0.7, streetMinorOp:0.3,
+             place:'#9A4E2C', street_lbl:'#B07A4A', halo:'#FDF6EB'};
+
+    /* ---- custom Horizons style on OpenFreeMap vector tiles ---- */
+    var style = {
+      version:8,
+      glyphs:'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
+      sources:{ ofm:{ type:'vector', url:'https://tiles.openfreemap.org/planet' } },
+      layers:[
+        {id:'bg', type:'background', paint:{'background-color':C.bg}},
+        {id:'park', type:'fill', source:'ofm','source-layer':'park',
+          paint:{'fill-color':C.park}},
+        {id:'water', type:'fill', source:'ofm','source-layer':'water',
+          paint:{'fill-color':C.water}},
+        {id:'building', type:'fill', source:'ofm','source-layer':'building', minzoom:13,
+          paint:{'fill-color':C.building,'fill-outline-color':C.buildingEdge}},
+        {id:'roads-minor', type:'line', source:'ofm','source-layer':'transportation',
+          filter:['in','class','minor','service','tertiary','path','track'],
+          layout:{'line-cap':'round','line-join':'round'},
+          paint:{'line-color':C.street,'line-opacity':C.streetMinorOp,
+            'line-width':['interpolate',['linear'],['zoom'],12,0.4,15,1.6,18,5]}},
+        {id:'roads-main', type:'line', source:'ofm','source-layer':'transportation',
+          filter:['in','class','motorway','trunk','primary','secondary'],
+          layout:{'line-cap':'round','line-join':'round'},
+          paint:{'line-color':C.street,'line-opacity':C.streetMainOp,
+            'line-width':['interpolate',['linear'],['zoom'],12,1.4,15,4,18,10]}},
+        {id:'street-lbl', type:'symbol', source:'ofm','source-layer':'transportation_name', minzoom:14,
+          layout:{'symbol-placement':'line','text-field':['get','name'],
+            'text-font':['Noto Sans Regular'],'text-size':11,'text-letter-spacing':0.02},
+          paint:{'text-color':C.street_lbl,'text-halo-color':C.halo,'text-halo-width':1.3}},
+        {id:'place-lbl', type:'symbol', source:'ofm','source-layer':'place',
+          filter:['in','class','suburb','neighbourhood','quarter'],
+          layout:{'text-field':['get','name'],'text-font':['Noto Sans Bold'],
+            'text-size':12,'text-letter-spacing':0.14,'text-transform':'uppercase'},
+          paint:{'text-color':C.place,'text-halo-color':C.halo,'text-halo-width':1.4}}
+      ]
+    };
+
+    var map = new maplibregl.Map({
+      container:'hzmap', style:style, center:[VENUE.lng,VENUE.lat], zoom:14.2,
+      attributionControl:false, scrollZoom:false, dragRotate:false, pitchWithRotate:false
+    });
+    map.touchZoomRotate.disableRotation();
+    map.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-right');
+    map.addControl(new maplibregl.AttributionControl({compact:true,
+      customAttribution:'© OpenStreetMap · OpenFreeMap · Valhalla'}),'bottom-right');
+
+    /* haversine metres -> rough walking minutes (fallback only) */
+    function haversine(a,b){
+      var R=6371000, toR=function(x){return x*Math.PI/180;};
+      var dLat=toR(b.lat-a.lat), dLng=toR(b.lng-a.lng);
+      var s=Math.sin(dLat/2)*Math.sin(dLat/2)+
+            Math.cos(toR(a.lat))*Math.cos(toR(b.lat))*Math.sin(dLng/2)*Math.sin(dLng/2);
+      return 2*R*Math.asin(Math.sqrt(s));
+    }
+    function fallbackMins(s){ return Math.max(1, Math.round(haversine(s,VENUE)*1.35/80)); }
+
+    /* gentle quadratic curve fallback (returns [[lat,lng],...]) */
+    function curve(a,b,k){
+      var mlat=(a.lat+b.lat)/2, mlng=(a.lng+b.lng)/2, dlat=b.lat-a.lat, dlng=b.lng-a.lng;
+      var clat=mlat - dlng*k, clng=mlng + dlat*k, pts=[], N=26;
+      for(var i=0;i<=N;i++){ var t=i/N,u=1-t;
+        pts.push([u*u*a.lat+2*u*t*clat+t*t*b.lat, u*u*a.lng+2*u*t*clng+t*t*b.lng]); }
+      return pts;
+    }
+    /* decode Valhalla encoded polyline (precision 6) -> [[lat,lng],...] */
+    function decode(str,precision){
+      var i=0,lat=0,lng=0,out=[],shift,result,byte,factor=Math.pow(10,precision||6);
+      while(i<str.length){
+        shift=0;result=0;
+        do{byte=str.charCodeAt(i++)-63;result|=(byte&0x1f)<<shift;shift+=5;}while(byte>=0x20);
+        lat+=(result&1)?~(result>>1):(result>>1);
+        shift=0;result=0;
+        do{byte=str.charCodeAt(i++)-63;result|=(byte&0x1f)<<shift;shift+=5;}while(byte>=0x20);
+        lng+=(result&1)?~(result>>1):(result>>1);
+        out.push([lat/factor,lng/factor]);
+      }
+      return out;
+    }
+    /* real pedestrian route via Valhalla -> {points:[[lat,lng]], mins} or null */
+    function fetchWalk(s){
+      var body={locations:[{lat:s.lat,lon:s.lng},{lat:VENUE.lat,lon:VENUE.lng}],
+                costing:'pedestrian',directions_options:{units:'kilometers'}};
+      var url='https://valhalla1.openstreetmap.de/route?json='+encodeURIComponent(JSON.stringify(body));
+      return fetch(url).then(function(r){return r.json();}).then(function(d){
+        var leg=d&&d.trip&&d.trip.legs&&d.trip.legs[0];
+        if(!leg||!leg.shape) return null;
+        return {points:decode(leg.shape,6),
+                mins:Math.max(1,Math.round((d.trip.summary&&d.trip.summary.time||0)/60))};
+      }).catch(function(){return null;});
+    }
+
+    function lineFeature(pts){
+      return {type:'Feature',geometry:{type:'LineString',
+        coordinates:pts.map(function(p){return [p[1],p[0]];})}}; // -> [lng,lat]
+    }
+
+    function mkVenue(){
+      var el=document.createElement('div'); el.className='venue-wrap';
+      el.innerHTML='<div class="sun"></div><div class="dot"></div>'+
+        '<div class="tag"><span class="nm">'+VENUE.name+'</span><span class="ad">'+VENUE.addr+'</span></div>';
+      new maplibregl.Marker({element:el, anchor:'top', offset:[0,-26]})
+        .setLngLat([VENUE.lng,VENUE.lat]).addTo(map);
+    }
+    function mkStation(s){
+      var el=document.createElement('div'); el.className='stn-wrap';
+      el.innerHTML='<span class="dia"></span><span class="lab"><span class="nm">'+s.name+
+        '</span><span class="mn">'+fallbackMins(s)+' min walk</span></span>';
+      s._mn=el.querySelector('.mn');
+      new maplibregl.Marker({element:el, anchor:'top', offset:[0,-12]})
+        .setLngLat([s.lng,s.lat]).addTo(map);
+    }
+
+    map.on('load', function(){
+      // first symbol layer id -> keep place/street labels above the routes
+      var firstSym; var ls=map.getStyle().layers;
+      for(var i=0;i<ls.length;i++){ if(ls[i].type==='symbol'){ firstSym=ls[i].id; break; } }
+
+      // routes source seeded with fallback curves; upgraded with real routes below
+      var feats = STATIONS.map(function(s){ return lineFeature(curve(s,VENUE,0.12)); });
+      function fc(){ return {type:'FeatureCollection', features:feats}; }
+      map.addSource('routes', {type:'geojson', data:fc()});
+      map.addLayer({id:'route-glow', type:'line', source:'routes',
+        layout:{'line-cap':'round','line-join':'round'},
+        paint:{'line-color':'#EE164F','line-width':7,'line-opacity':0.14}}, firstSym);
+      map.addLayer({id:'route-dots', type:'line', source:'routes',
+        layout:{'line-cap':'round','line-join':'round'},
+        paint:{'line-color':'#B0093C','line-width':3.2,'line-dasharray':[0,2]}}, firstSym);
+
+      // markers
+      mkVenue(); STATIONS.forEach(mkStation);
+
+      // frame everything
+      var b=new maplibregl.LngLatBounds();
+      b.extend([VENUE.lng,VENUE.lat]); STATIONS.forEach(function(s){ b.extend([s.lng,s.lat]); });
+      map.fitBounds(b,{padding:{top:80,right:70,bottom:90,left:70}, maxZoom:15.4, duration:0});
+
+      // upgrade each route to a real pedestrian path + real walk time
+      STATIONS.forEach(function(s,idx){
+        fetchWalk(s).then(function(res){
+          if(!res) return;
+          feats[idx]=lineFeature(res.points);
+          if(map.getSource('routes')) map.getSource('routes').setData(fc());
+          if(s._mn) s._mn.textContent=res.mins+' min walk';
+        });
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

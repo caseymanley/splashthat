@@ -11,9 +11,16 @@
 
   .stage{position:relative;width:100%;height:100vh;overflow:hidden;background:#3D001A}
 
-  /* ---- VIDEO ---- */
-  .video{position:absolute;inset:0;z-index:0}
-  .video video{width:100%;height:100%;object-fit:cover;display:block}
+  /* ---- VIDEO (Vimeo background) ---- */
+  .video{position:absolute;inset:0;z-index:0;overflow:hidden}
+  /* iframes can't use object-fit, so size the player to a 16:9 rectangle that
+     always COVERS the stage (whichever of width/height is larger wins).
+     If your Vimeo source ISN'T 16:9, tell me and I'll adjust 56.25 / 177.78. */
+  .video iframe{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:100vw;height:56.25vw;min-width:177.78vh;min-height:100vh;
+    border:0;pointer-events:none;
+  }
 
   /* ---- WINE DOT-MATRIX TEXTURE ---- */
   .tint{
@@ -45,8 +52,12 @@
   <div class="stage">
 
     <div class="video">
-      <video src="https://birdasaurus.com/horizons/horizons_hero.mp4"
-             muted autoplay loop playsinline preload="auto"></video>
+      <!-- Vimeo BACKGROUND video: background=1 gives muted + looped + autoplay
+           + no controls/UI. The video's Vimeo privacy MUST allow embedding on
+           your domains (see notes). To change the video, swap the ID below. -->
+      <iframe src="https://player.vimeo.com/video/1207205515?background=1&autoplay=1&loop=1&muted=1&autopause=0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              title="Horizons background" loading="eager"></iframe>
     </div>
 
     <div class="tint"></div>

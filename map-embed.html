@@ -157,6 +157,26 @@
     map.addControl(new maplibregl.AttributionControl({compact:true,
       customAttribution:'© OpenStreetMap · OpenFreeMap · Valhalla'}),'bottom-right');
 
+    /* Keep the canvas filling the iframe AND re-frame the pins as the container
+       settles. On first load the Splash column/iframe often lays out AFTER init,
+       so the first fitBounds is computed at the wrong size and the pins cram
+       together. We re-resize + re-fit on any size change and a few timeouts,
+       then stop auto-framing the moment the user interacts with the map. */
+    var BOUNDS=new maplibregl.LngLatBounds();
+    BOUNDS.extend([VENUE.lng,VENUE.lat]);
+    STATIONS.forEach(function(s){ BOUNDS.extend([s.lng,s.lat]); });
+    var FITOPTS={padding:{top:80,right:70,bottom:90,left:70}, maxZoom:15.4, duration:0};
+    var userMoved=false, hz=document.getElementById('hzmap');
+    ['pointerdown','wheel','touchstart'].forEach(function(ev){
+      hz.addEventListener(ev, function(){ userMoved=true; }, {passive:true});
+    });
+    function frame(){ if(!userMoved){ try{ map.fitBounds(BOUNDS, FITOPTS); }catch(e){} } }
+    function safeResize(){ try{ map.resize(); }catch(e){} frame(); }
+    if(window.ResizeObserver){ new ResizeObserver(safeResize).observe(hz); }
+    window.addEventListener('resize', safeResize);
+    map.on('load', safeResize);
+    setTimeout(safeResize,300); setTimeout(safeResize,1200); setTimeout(safeResize,2500);
+
     /* haversine metres -> rough walking minutes (fallback only) */
     function haversine(a,b){
       var R=6371000, toR=function(x){return x*Math.PI/180;};
@@ -242,10 +262,8 @@
       // markers
       mkVenue(); STATIONS.forEach(mkStation);
 
-      // frame everything
-      var b=new maplibregl.LngLatBounds();
-      b.extend([VENUE.lng,VENUE.lat]); STATIONS.forEach(function(s){ b.extend([s.lng,s.lat]); });
-      map.fitBounds(b,{padding:{top:80,right:70,bottom:90,left:70}, maxZoom:15.4, duration:0});
+      // frame everything (frame() re-fits as the container settles — see above)
+      frame();
 
       // upgrade each route to a real pedestrian path + real walk time
       STATIONS.forEach(function(s,idx){

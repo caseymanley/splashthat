@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Horizons 2026 — Venue map</title>
+
+<!-- ============================================================
+     hz-map — HiBob Horizons 2026 (UK)
+     Standalone iframe section. Drop into caseymanley/splashthat
+     and embed on Splash with:
+
+     <iframe src="https://caseymanley.github.io/splashthat/hz-map.html"
+             style="width:100%;height:600px;border:0;display:block"
+             loading="lazy" title="Venue map"></iframe>
+
+     Everything is configured in the CONFIG block below.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Domine:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ---------- palette: sampled straight from the hero artwork ---------- */
+  :root{
+    --ps-cream:        #FFF5E5;  /* page + land */
+    --ps-cream-2:      #FBEAD3;  /* landuse, parks, buildings-under */
+    --ps-sand:         #F5DCB6;  /* water */
+    --ps-sand-deep:    #D7AC7E;  /* shoreline, rail, boundaries */
+    --ps-building:     #F3E1C3;
+    --ps-orange:       #F98F18;  /* primary roads  (hero line 1) */
+    --ps-orange-mid:   #F77D24;  /* secondary      (hero line 2) */
+    --ps-orange-hot:   #F56436;  /* motorway       (hero line 3) */
+    --ps-orange-soft:  #FCC27E;  /* minor streets */
+    --ps-ink:          #6E4520;  /* label ink */
+    --ps-ink-soft:     #A5753F;
+    --ps-pink:         #EE164F;  /* Pioneer Partner flag */
+    --ps-shadow:       0 6px 24px rgba(110,69,32,.16), 0 1px 2px rgba(110,69,32,.10);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html,body{ height:100%; margin:0; }
+  body{
+    background:var(--ps-cream);
+    font-family:"Archivo",system-ui,-apple-system,sans-serif;
+    color:var(--ps-ink);
+    overflow:hidden;
+  }
+
+  #map{ position:absolute; inset:0; background:var(--ps-cream); }
+  .mapboxgl-canvas:focus-visible,
+  .maplibregl-canvas:focus-visible{ outline:3px solid var(--ps-pink); outline-offset:-3px; }
+
+  /* soft cream vignette so the map melts into the page instead of sitting in a box */
+  .frame{
+    position:absolute; inset:0; pointer-events:none; z-index:2;
+    box-shadow:inset 0 0 0 1px rgba(215,172,126,.55),
+               inset 0 22px 34px -22px var(--ps-cream),
+               inset 0 -22px 34px -22px var(--ps-cream);
+  }
+
+  /* ---------------- marker: the Pioneer Partner flag ---------------- */
+  /* container is a zero-size point pinned to the venue coordinate */
+  .ps-pin{ position:relative; width:0; height:0; }
+
+  .ps-pin .ripple,
+  .ps-pin .dot{
+    position:absolute; left:0; top:0; border-radius:50%;
+    transform:translate(-50%,-50%);
+  }
+  .ps-pin .dot{
+    width:16px; height:16px;
+    background:#fff;
+    border:4px solid var(--ps-orange-hot);
+    box-shadow:0 2px 6px rgba(110,69,32,.28);
+  }
+  .ps-pin .ripple{
+    width:16px; height:16px;
+    border:2px solid var(--ps-orange-hot);
+    opacity:0;
+    animation:ps-ripple 3.2s cubic-bezier(.2,.6,.2,1) infinite;
+    animation-delay:1s;
+  }
+  @keyframes ps-ripple{
+    0%   { transform:translate(-50%,-50%) scale(1);   opacity:.55; }
+    70%  { transform:translate(-50%,-50%) scale(4.4); opacity:0; }
+    100% { transform:translate(-50%,-50%) scale(4.4); opacity:0; }
+  }
+
+  /* flag: pole runs down the right edge of the artwork (x ≈ 94.5% of width),
+     so we offset left by 0.945 × width to land the pole base on the dot */
+  .ps-pin .flag{
+    --w:46px;
+    position:absolute;
+    width:var(--w);
+    left:calc(var(--w) * -0.945);
+    bottom:0;
+    transform-origin:95% 100%;
+    animation:ps-plant .9s cubic-bezier(.2,1.2,.3,1) both,
+              ps-wind 6s ease-in-out 1.2s infinite;
+    filter:drop-shadow(0 6px 10px rgba(110,69,32,.28));
+  }
+  .ps-pin .flag svg{ display:block; width:100%; height:auto; }
+
+  @keyframes ps-plant{
+    0%   { transform:translateY(-18px) scale(.72) rotate(-8deg); opacity:0; }
+    60%  { opacity:1; }
+    100% { transform:translateY(0) scale(1) rotate(0deg); opacity:1; }
+  }
+  @keyframes ps-wind{
+    0%,100%{ transform:rotate(0deg)   skewY(0deg); }
+    35%    { transform:rotate(-1.4deg) skewY(.8deg); }
+    70%    { transform:rotate(1deg)   skewY(-.5deg); }
+  }
+
+  /* ---------------- venue card ---------------- */
+  .venue{
+    position:absolute; z-index:3;
+    left:24px; bottom:24px;
+    max-width:340px;
+    padding:20px 22px;
+    background:var(--ps-cream);
+    border:1px solid rgba(215,172,126,.8);
+    border-radius:14px;
+    box-shadow:var(--ps-shadow);
+    animation:ps-rise .7s cubic-bezier(.2,.8,.2,1) .35s both;
+  }
+  @keyframes ps-rise{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:none; } }
+
+  .venue .eyebrow{
+    display:flex; align-items:center; gap:8px;
+    font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--ps-orange-hot); margin:0 0 10px;
+  }
+  .venue .eyebrow::before{
+    content:""; width:18px; height:3px; border-radius:2px; background:var(--ps-orange);
+  }
+  .venue h1{
+    font-family:"Domine",Georgia,serif;
+    font-weight:700; font-size:22px; line-height:1.25;
+    margin:0 0 6px; color:var(--ps-ink);
+  }
+  .venue p{ margin:0; font-size:13px; line-height:1.5; color:var(--ps-ink-soft); }
+  .venue a{
+    display:inline-flex; align-items:center; gap:6px;
+    margin-top:14px; padding:9px 14px;
+    font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ps-cream); background:var(--ps-pink);
+    border-radius:999px; text-decoration:none;
+    transition:transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+  }
+  .venue a:hover{ transform:translateY(-1px); box-shadow:0 6px 14px rgba(238,22,79,.28); }
+  .venue a:focus-visible{ outline:3px solid var(--ps-ink); outline-offset:2px; }
+  .venue a svg{ width:11px; height:11px; }
+
+  /* ---------------- zoom control ---------------- */
+  .mapboxgl-ctrl-group,
+  .maplibregl-ctrl-group{
+    background:var(--ps-cream) !important;
+    border:1px solid rgba(215,172,126,.8) !important;
+    border-radius:10px !important;
+    box-shadow:var(--ps-shadow) !important;
+    overflow:hidden;
+  }
+  .mapboxgl-ctrl-group button + button,
+  .maplibregl-ctrl-group button + button{ border-top:1px solid rgba(215,172,126,.6) !important; }
+  .mapboxgl-ctrl-group button:hover,
+  .maplibregl-ctrl-group button:hover{ background:var(--ps-cream-2) !important; }
+  .mapboxgl-ctrl-icon,
+  .maplibregl-ctrl-icon{ filter:sepia(1) saturate(2.2) hue-rotate(-12deg) brightness(.62); }
+
+  /* attribution stays (it's required) — just made quiet */
+  .mapboxgl-ctrl-attrib,
+  .maplibregl-ctrl-attrib{
+    background:rgba(255,245,229,.82) !important;
+    font-family:"Archivo",sans-serif !important;
+    font-size:10px !important;
+  }
+  .mapboxgl-ctrl-attrib a,
+  .maplibregl-ctrl-attrib a{ color:var(--ps-ink-soft) !important; }
+
+  /* ---------------- loading / error ---------------- */
+  .status{
+    position:absolute; inset:0; z-index:4;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    background:var(--ps-cream);
+    text-align:center; padding:32px;
+    transition:opacity .5s ease;
+  }
+  .status[hidden]{ display:none; }
+  .status.is-gone{ opacity:0; pointer-events:none; }
+  .status .beat{
+    width:12px; height:12px; border-radius:50%;
+    background:var(--ps-orange-hot);
+    animation:ps-beat 1.1s ease-in-out infinite;
+  }
+  @keyframes ps-beat{ 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(.55); opacity:.4; } }
+  .status p{
+    margin:0; max-width:340px;
+    font-size:13px; font-weight:600; letter-spacing:.04em;
+    color:var(--ps-ink-soft);
+  }
+  .status code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    background:var(--ps-cream-2); padding:1px 5px; border-radius:4px; color:var(--ps-ink);
+  }
+
+  @media (max-width:600px){
+    .venue{ left:12px; right:12px; bottom:12px; max-width:none; padding:16px 18px; }
+    .venue h1{ font-size:19px; }
+    .ps-pin .flag{ --w:40px; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="map" role="region" aria-label="Map showing Protein Studios, Shoreditch, London"></div>
+<div class="frame" aria-hidden="true"></div>
+
+<div class="status" id="status" role="status">
+  <span class="beat" aria-hidden="true"></span>
+  <p id="statusText">Loading the map</p>
+</div>
+
+<aside class="venue">
+  <p class="eyebrow">Horizons 2026</p>
+  <h1>Protein Studios</h1>
+  <p>31 New Inn Yard, Shoreditch, London EC2A 3EY</p>
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Protein+Studios+Shoreditch&destination_place_id=ChIJ1S-VU7AcdkgRE7wOPVvwrWc"
+     target="_blank" rel="noopener">
+    Get directions
+    <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M3 9L9 3M9 3H4M9 3v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+</aside>
+
+<script>
+/* ============================================================
+   CONFIG — the only part you need to touch
+   ============================================================ */
+const CONFIG = {
+  // Paste a Mapbox public token (pk.…) here.
+  // Leave it as an empty string and the map falls back to MapLibre +
+  // OpenFreeMap tiles, which need no token or account. Same look either way.
+  mapboxToken: '',
+
+  center: [-0.0783859, 51.5246166],  // Protein Studios, Shoreditch
+  zoom: 15,
+  minZoom: 10,
+  maxZoom: 17,
+  bearing: -14,                   // slight tilt off north — reads more like a drawn map
+  hidePOIs: true                  // clears the clutter so the flag is the only thing to look at
+};
+
+/* ---------- palette pulled from the CSS custom properties ---------- */
+const css = getComputedStyle(document.documentElement);
+const C = {
+  land:      css.getPropertyValue('--ps-cream').trim(),
+  landAlt:   css.getPropertyValue('--ps-cream-2').trim(),
+  water:     css.getPropertyValue('--ps-sand').trim(),
+  shore:     css.getPropertyValue('--ps-sand-deep').trim(),
+  building:  css.getPropertyValue('--ps-building').trim(),
+  hot:       css.getPropertyValue('--ps-orange-hot').trim(),
+  mid:       css.getPropertyValue('--ps-orange-mid').trim(),
+  main:      css.getPropertyValue('--ps-orange').trim(),
+  soft:      css.getPropertyValue('--ps-orange-soft').trim(),
+  ink:       css.getPropertyValue('--ps-ink').trim(),
+  inkSoft:   css.getPropertyValue('--ps-ink-soft').trim(),
+  pink:      css.getPropertyValue('--ps-pink').trim()
+};
+
+const statusEl = document.getElementById('status');
+const statusText = document.getElementById('statusText');
+
+function fail(msg){
+  statusEl.classList.remove('is-gone');
+  statusEl.hidden = false;
+  statusText.innerHTML = msg;
+  statusEl.querySelector('.beat').style.animation = 'none';
+}
+function ready(){
+  statusEl.classList.add('is-gone');
+  setTimeout(() => { statusEl.hidden = true; }, 500);
+}
+
+/* ---------- load the right library, then boot ---------- */
+const useMapbox = CONFIG.mapboxToken.trim().startsWith('pk.');
+
+const LIB = useMapbox
+  ? { js:'https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js',
+      css:'https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css',
+      global:'mapboxgl',
+      style:'mapbox://styles/mapbox/light-v11' }
+  : { js:'https://unpkg.com/maplibre-gl@5.1.0/dist/maplibre-gl.js',
+      css:'https://unpkg.com/maplibre-gl@5.1.0/dist/maplibre-gl.css',
+      global:'maplibregl',
+      style:'https://tiles.openfreemap.org/styles/liberty' };
+
+(function boot(){
+  const link = document.createElement('link');
+  link.rel = 'stylesheet'; link.href = LIB.css;
+  document.head.appendChild(link);
+
+  const script = document.createElement('script');
+  script.src = LIB.js;
+  script.onload = init;
+  script.onerror = () => fail('The map library didn\u2019t load. Check the network connection, then reload.');
+  document.head.appendChild(script);
+})();
+
+function init(){
+  const gl = window[LIB.global];
+  if (useMapbox) gl.accessToken = CONFIG.mapboxToken.trim();
+
+  const map = new gl.Map({
+    container: 'map',
+    style: LIB.style,
+    center: CONFIG.center,
+    zoom: CONFIG.zoom,
+    minZoom: CONFIG.minZoom,
+    maxZoom: CONFIG.maxZoom,
+    bearing: CONFIG.bearing,
+    pitch: 0,
+    attributionControl: true,
+    cooperativeGestures: true,   // scroll past the iframe without hijacking the page
+    dragRotate: false,
+    touchPitch: false
+  });
+
+  map.addControl(new gl.NavigationControl({ showCompass:false }), 'bottom-right');
+
+  map.on('error', e => {
+    const msg = (e && e.error && e.error.message) || '';
+    if (/access token|401|Unauthorized/i.test(msg)){
+      fail('Mapbox rejected the access token. Paste a valid public token into <code>CONFIG.mapboxToken</code>, or clear it to use the no-token fallback.');
+    }
+  });
+
+  map.on('style.load', () => {
+    repaint(map);
+    addFlag(map, gl);
+    ready();
+  });
+}
+
+/* ============================================================
+   repaint() — walks every layer in the base style and recolors it.
+   Works on both Mapbox Streets v8 and the OpenMapTiles schema,
+   so you get the same cream/orange map with or without a token.
+   ============================================================ */
+function repaint(map){
+  const layers = (map.getStyle().layers || []);
+
+  const set = (id, prop, val) => { try { map.setPaintProperty(id, prop, val); } catch(e){} };
+  const hide = id => { try { map.setLayoutProperty(id, 'visibility', 'none'); } catch(e){} };
+
+  for (const layer of layers){
+    const id = layer.id.toLowerCase();
+    const src = (layer['source-layer'] || '').toLowerCase();
+    const key = id + ' ' + src;
+    const type = layer.type;
+
+    // 1. background
+    if (type === 'background'){ set(layer.id, 'background-color', C.land); continue; }
+
+    // 2. noise we don't want: POIs, 3D extrusions, hillshade, aerial
+    if (CONFIG.hidePOIs && /poi|place-of-worship|amenity/.test(key) && type === 'symbol'){ hide(layer.id); continue; }
+    if (type === 'fill-extrusion' || type === 'hillshade' || type === 'raster'){ hide(layer.id); continue; }
+
+    // 3. water
+    if (/water|ocean|sea|bathymetry|marina/.test(key)){
+      if (type === 'fill') { set(layer.id, 'fill-color', C.water); set(layer.id, 'fill-outline-color', C.water); }
+      if (type === 'line') { set(layer.id, 'line-color', C.shore); set(layer.id, 'line-opacity', .5); }
+      if (type === 'symbol'){ set(layer.id, 'text-color', C.inkSoft); set(layer.id, 'text-halo-color', C.water); set(layer.id, 'text-halo-width', 1.4); }
+      continue;
+    }
+    if (/waterway|river|canal|stream/.test(key)){
+      set(layer.id, 'line-color', C.shore); set(layer.id, 'line-opacity', .45);
+      continue;
+    }
+
+    // 4. buildings
+    if (/building/.test(key)){
+      if (type === 'fill'){ set(layer.id, 'fill-color', C.building); set(layer.id, 'fill-outline-color', C.landAlt); set(layer.id, 'fill-opacity', .9); }
+      if (type === 'line'){ set(layer.id, 'line-color', C.landAlt); }
+      continue;
+    }
+
+    // 5. land, parks, sand, golf, aeroway — all one quiet cream family
+    if (/land|park|wood|forest|grass|pitch|golf|sand|beach|cemetery|hospital|school|pedestrian-poly|aeroway|airport|residential/.test(key) && type !== 'symbol'){
+      if (type === 'fill') { set(layer.id, 'fill-color', C.landAlt); set(layer.id, 'fill-outline-color', C.landAlt); }
+      if (type === 'line') { set(layer.id, 'line-color', C.shore); set(layer.id, 'line-opacity', .3); }
+      continue;
+    }
+
+    // 6. roads — the hero's transit lines, drawn from real geometry
+    if (/road|street|highway|motorway|transportation|bridge|tunnel|path|track|ferry|rail|transit/.test(key)){
+      if (type === 'symbol'){          // shields + street names
+        set(layer.id, 'text-color', C.ink);
+        set(layer.id, 'text-halo-color', C.land);
+        set(layer.id, 'text-halo-width', 1.6);
+        set(layer.id, 'icon-opacity', 0);
+        continue;
+      }
+      if (type !== 'line') continue;
+
+      // casings become cream, so the lines read as separate strokes
+      if (/case|casing|outline|bg/.test(id)){ set(layer.id, 'line-color', C.land); continue; }
+
+      if (/rail|transit|ferry/.test(key)){ set(layer.id, 'line-color', C.shore); set(layer.id, 'line-opacity', .6); continue; }
+      if (/path|footway|pedestrian|track|steps|cycle/.test(key)){ set(layer.id, 'line-color', C.shore); set(layer.id, 'line-opacity', .55); continue; }
+      if (/motorway|trunk/.test(key)){ set(layer.id, 'line-color', C.hot);  continue; }
+      if (/primary/.test(key)){        set(layer.id, 'line-color', C.main); continue; }
+      if (/secondary|tertiary/.test(key)){ set(layer.id, 'line-color', C.mid); continue; }
+      set(layer.id, 'line-color', C.soft);   // minor + service streets
+      continue;
+    }
+
+    // 7. borders
+    if (/admin|boundary|border/.test(key) && type === 'line'){
+      set(layer.id, 'line-color', C.shore); set(layer.id, 'line-opacity', .55);
+      continue;
+    }
+
+    // 8. everything else that's text: place names, neighborhoods
+    if (type === 'symbol'){
+      set(layer.id, 'text-color', C.ink);
+      set(layer.id, 'text-halo-color', C.land);
+      set(layer.id, 'text-halo-width', 1.8);
+      set(layer.id, 'icon-opacity', 0);
+      continue;
+    }
+    if (type === 'fill'){ set(layer.id, 'fill-color', C.landAlt); }
+    if (type === 'line'){ set(layer.id, 'line-color', C.shore); set(layer.id, 'line-opacity', .35); }
+  }
+}
+
+/* ============================================================
+   addFlag() — the Pioneer Partner flag, planted on the resort
+   ============================================================ */
+function addFlag(map, gl){
+  const el = document.createElement('div');
+  el.className = 'ps-pin';
+  el.setAttribute('aria-hidden', 'true');   // the venue card already carries this info
+  el.innerHTML = `
+    <span class="ripple"></span>
+    <span class="dot"></span>
+    <span class="flag">
+      <svg viewBox="0 0 102 111" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <path d="M0.223076 47.9107C0.623322 41.1616 0.59977 28.2791 7.63934 25.248C10.394 24.0639 19.3877 26.0531 27.0629 26.7872C33.3962 27.4029 39.4234 25.2953 41.919 19.4461C43.4729 15.7992 42.4605 10.0921 45.8979 7.72397C51.2188 4.05341 79.1652 5.42691 91.2196 7.62925C91.3844 6.42151 91.5963 5.21378 91.8788 4.00604C93.1266 -1.559 101.673 -1.32219 101.744 4.69279C101.861 15.373 101.014 22.7614 101.108 31.855C101.226 43.4113 101.108 54.9677 101.108 66.524C101.108 88.9263 100.543 84.3085 100.614 106.711C100.614 112.465 90.7487 112.063 90.7252 106.024C90.6545 83.6218 91.2196 88.2632 91.2196 65.8373C91.2196 64.5348 91.2196 63.2324 91.2196 61.9299C80.3424 58.3067 68.1232 57.5963 58.4938 58.7803C46.0156 60.3196 51.1717 75.2387 45.1916 78.2462C35.6799 83.0061 28.8993 82.5798 16.8685 81.8931C5.02599 81.2063 1.65924 80.5906 0.858757 74.3625C-0.0359039 67.4002 -0.200714 54.8966 0.223076 47.9107Z"
+              fill="#EE164F"/>
+      </svg>
+    </span>`;
+
+  new gl.Marker({ element: el, anchor: 'center', rotationAlignment: 'viewport' })
+    .setLngLat(CONFIG.center)
+    .addTo(map);
+}
+</script>
+</body>
+</html>

@@ -92,7 +92,8 @@
   .card .avs .av{width:30px;height:30px;border-radius:50%;margin-left:-8px;
     border:2px solid var(--cream);display:grid;place-items:center;
     font-family:'Space Mono',monospace;font-weight:700;font-size:9.5px;color:var(--cream);
-    background:var(--grad)}
+    background:var(--grad);position:relative;overflow:hidden}
+  .card .avs .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .card .avs .av:first-child{margin-left:0}
   .card .avs .more{background:var(--wine)}
   .card .go{font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.1em;
@@ -202,10 +203,10 @@
   /* speakers */
   .spk{display:flex;gap:18px;padding:20px 0;border-top:1px solid var(--line)}
   .spk:first-child{border-top:none;padding-top:4px}
-  .spk .photo{flex:0 0 auto;width:76px;height:76px;border-radius:16px;overflow:hidden;
+  .spk .photo{flex:0 0 auto;width:76px;height:76px;border-radius:16px;overflow:hidden;position:relative;
     display:grid;place-items:center;background:var(--grad);
     font-family:'Archivo Black',sans-serif;font-size:1.4rem;color:var(--cream)}
-  .spk .photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .spk .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .spk .info{flex:1;min-width:0}
   .spk .nm{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:1.02rem;
     line-height:1.05;color:var(--ink);display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
@@ -431,10 +432,16 @@
     }
     function el(html){var t=document.createElement('template');t.innerHTML=html.trim();return t.content.firstChild;}
     function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+    /* Headshots auto-load from  speakers/<id>.webp  (relative to THIS file's URL
+       on GitHub Pages). An explicit photo:'…' on a speaker overrides it; a missing
+       file (404) silently falls back to the initials placeholder. Change the
+       folder/extension here if you host them elsewhere. */
+    var PHOTO_BASE='speakers/', PHOTO_EXT='.jpg';
     function avatar(id,cls){
       var s=S[id]; if(!s) return '';
-      var inner = s.photo ? '<img src="'+s.photo+'" alt="'+esc(s.name)+'">' : esc(initials(s.name));
-      return '<span class="'+cls+'">'+inner+'</span>';
+      var url = s.photo || (PHOTO_BASE + id + PHOTO_EXT);
+      return '<span class="'+cls+'">'+esc(initials(s.name))+
+        '<img src="'+url+'" alt="'+esc(s.name)+'" loading="lazy" onerror="this.remove()"></span>';
     }
 
     /* ============ render rail ============ */

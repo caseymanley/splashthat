@@ -38,13 +38,30 @@
     -webkit-font-smoothing:antialiased;overflow:hidden}
   #hz{position:relative;height:100%;min-height:520px;display:flex;flex-direction:column}
 
+  /* ---------- CONTROLS (progress rail + arrows + hint) ---------- */
+  .controls{flex:0 0 auto;padding:18px 22px 0;display:flex;flex-direction:column;gap:13px}
+  .prog{display:flex;align-items:center;gap:13px}
+  .prog .tm{font-family:'Space Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.06em;color:var(--cream)}
+  .prog .line{flex:1;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--orange),var(--cherry) 55%,var(--cocoa))}
+  .prog .dot{width:12px;height:12px;border-radius:50%;background:var(--orange);flex:0 0 auto}
+  .prog .dot.end{background:var(--cherry)}
+  .nav{display:flex;align-items:center;gap:10px}
+  .nav .arrow{width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(253,246,235,.45);
+    background:transparent;color:var(--cream);font-size:19px;line-height:1;cursor:pointer;
+    display:grid;place-items:center;font-family:'Domine',serif;-webkit-appearance:none;appearance:none;
+    transition:background .2s,color .2s,transform .2s}
+  .nav .arrow:hover{background:var(--cream);color:var(--wine);transform:translateY(-2px)}
+  .nav .hint{margin-left:auto;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:rgba(253,246,235,.55)}
+
   /* ---------- RAIL ---------- */
   .rail{
     flex:1;display:flex;gap:16px;align-items:stretch;
     overflow-x:auto;overflow-y:hidden;
     padding:22px 22px 26px;scroll-snap-type:x proximity;
-    scrollbar-width:thin;scrollbar-color:rgba(253,246,235,.35) transparent;
+    scrollbar-width:thin;scrollbar-color:rgba(253,246,235,.35) transparent;cursor:grab;
   }
+  .rail.drag{cursor:grabbing;scroll-snap-type:none}
   .rail::-webkit-scrollbar{height:8px}
   .rail::-webkit-scrollbar-thumb{background:rgba(253,246,235,.28);border-radius:8px}
   .rail::-webkit-scrollbar-track{background:transparent}
@@ -53,12 +70,13 @@
   .card{
     scroll-snap-align:start;flex:0 0 auto;width:300px;
     display:flex;flex-direction:column;
-    border-radius:18px;padding:22px 22px 18px;position:relative;
-    border:1.5px solid transparent;background:var(--cream);color:var(--ink);
-    transition:transform .18s cubic-bezier(.16,1,.3,1), border-color .18s;
+    border-radius:18px;padding:22px 22px 18px;position:relative;overflow:hidden;
+    background:var(--cream);color:var(--ink);
+    border:none;-webkit-appearance:none;appearance:none;margin:0;
+    transition:transform .18s cubic-bezier(.16,1,.3,1);
     cursor:pointer;text-align:left;font:inherit;
   }
-  .card:hover,.card:focus-visible{transform:translateY(-6px);border-color:var(--cherry);outline:none}
+  .card:hover,.card:focus-visible{transform:translateY(-6px);outline:none}
   .card .time{font-family:'Space Mono',monospace;font-weight:700;font-size:12.5px;
     letter-spacing:.04em;color:var(--wine2)}
   .card .loc{display:inline-flex;align-items:center;gap:5px;margin-top:9px;
@@ -68,8 +86,7 @@
     background:var(--cocoa)}
   .card h3{margin:13px 0 0;font-family:'Archivo Black',sans-serif;text-transform:uppercase;
     font-size:1.18rem;line-height:1.06;letter-spacing:.005em}
-  .card .teaser{margin:10px 0 0;font-size:13.5px;line-height:1.45;color:#4a3540;
-    flex:1}
+  .card .teaser{margin:10px 0 0;font-size:13.5px;line-height:1.45;color:#4a3540;flex:1}
   .card .foot{margin-top:15px;display:flex;align-items:center;justify-content:space-between;gap:10px}
   .card .avs{display:flex}
   .card .avs .av{width:30px;height:30px;border-radius:50%;margin-left:-8px;
@@ -83,52 +100,52 @@
   .card .go span{transition:transform .18s}
   .card:hover .go span{transform:translateX(3px)}
 
-  /* plenary = the whole-room moments (cream, cherry accent) */
-  .card.plenary{border-top:5px solid var(--cherry)}
+  /* accent strip via ::before (clipped by overflow:hidden -> clean rounded corners,
+     no pinched wedges like a thick border-top gives) */
+  .card.plenary::before,.card.breakout::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;
+    background:var(--cherry);z-index:1}
+  .card.breakout::before{background:var(--trk,var(--cherry))}
   /* feature = the marquee keynote */
   .card.feature{background:var(--wine);color:var(--cream);border:1.5px solid rgba(253,246,235,.2);
     width:330px}
-  .card.feature h3,.card.feature .time{color:var(--cream)}
-  .card.feature .time{color:var(--orange)}
+  .card.feature h3{color:var(--cream)}
+  .card.feature .time{color:var(--sand)}
   .card.feature .teaser{color:rgba(253,246,235,.85)}
   .card.feature .loc{color:rgba(253,246,235,.7)}
   .card.feature::after{content:"KEYNOTE";position:absolute;top:16px;right:18px;
-    font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--orange)}
+    font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--cherry)}
 
-  /* breakout = choose-one, colour-coded by room */
-  .card.breakout{border-top:5px solid var(--trk,var(--cherry))}
+  /* breakout = choose-one; the strip + location dot carry the room colour, text stays cherry */
   .card.breakout .loc::before{background:var(--trk,var(--cocoa))}
-  .card.breakout .go{color:var(--trk,var(--cherry))}
-  .card.breakout:hover,.card.breakout:focus-visible{border-color:var(--trk,var(--cherry))}
 
   /* social = arrivals / send-off (gradient, lighter) */
-  .card.social{background:var(--grad);color:var(--wine);border:none}
-  .card.social h3,.card.social .time{color:var(--wine)}
-  .card.social .teaser{color:rgba(61,0,26,.82)}
-  .card.social .loc{color:rgba(61,0,26,.7)}.card.social .loc::before{background:var(--wine)}
-  .card.social .go{color:var(--wine)}
+  .card.social{background:linear-gradient(140deg,#EE164F,#B0093C 60%,#60032A);color:var(--cream);border:none}
+  .card.social h3{color:var(--cream)}
+  .card.social .time{color:var(--sand)}
+  .card.social .teaser{color:rgba(253,246,235,.9)}
+  .card.social .loc{color:rgba(253,246,235,.72)}.card.social .loc::before{background:var(--cream)}
+  .card.social .go{color:var(--cream)}
 
   /* break = slim non-interactive intermission */
-  .brk{scroll-snap-align:start;flex:0 0 auto;width:104px;border-radius:18px;
-    background:rgba(253,246,235,.06);border:1.5px dashed rgba(253,246,235,.22);
+  .brk{scroll-snap-align:start;flex:0 0 auto;width:104px;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
     padding:16px 10px;text-align:center}
-  .brk .ic{width:26px;height:13px;border-radius:13px 13px 0 0;background:var(--grad)}
+  .brk .ic{display:grid;place-items:center}.brk .ic svg{display:block}
   .brk .t{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.05em;color:rgba(253,246,235,.75)}
   .brk .n{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:.82rem;
     line-height:1;color:var(--cream)}
 
-  /* slot = "Breakouts · choose one" divider before a trio */
-  .slot{scroll-snap-align:start;flex:0 0 auto;width:118px;border-radius:18px;
-    background:var(--wine2);border:1.5px solid rgba(253,246,235,.16);
-    display:flex;flex-direction:column;justify-content:center;gap:8px;padding:20px 18px}
-  .slot .k{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;
-    color:var(--orange)}
-  .slot .l{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:1.15rem;
-    line-height:1;color:var(--cream)}
-  .slot .tm{font-family:'Space Mono',monospace;font-size:10.5px;color:rgba(253,246,235,.75)}
-  .slot .note{margin-top:4px;font-size:12px;line-height:1.3;color:rgba(253,246,235,.7)}
-  .slot .arrow{margin-top:6px;color:var(--orange);font-size:15px}
+  /* tray = the "choose one" group that WRAPS the parallel breakout cards */
+  .tray{scroll-snap-align:start;flex:0 0 auto;display:flex;flex-direction:column;gap:13px;
+    background:var(--wine2);border-radius:22px;padding:15px}
+  .tray-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:4px 6px 0}
+  .tray-head .k{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:1rem;
+    letter-spacing:.02em;color:var(--cream);line-height:1}
+  .tray-head .tm{font-family:'Space Mono',monospace;font-size:10.5px;color:rgba(253,246,235,.7);margin-top:4px}
+  .tray-head .ch{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--sand);background:rgba(253,246,235,.12);padding:6px 11px;border-radius:20px;white-space:nowrap}
+  .tray-cards{display:flex;gap:13px;align-items:stretch;flex:1}
+  .tray .card{width:286px}
 
   /* ---------- POPOVER ---------- */
   .pop{position:fixed;inset:0;z-index:50;display:none}
@@ -200,10 +217,12 @@
 
   /* ---------- MOBILE ---------- */
   @media (max-width:600px){
+    .controls{padding:14px 16px 0}
+    .nav .arrow{width:40px;height:40px}
     .rail{gap:12px;padding:16px 16px 20px;scroll-snap-type:x mandatory}
     .card{width:80vw;max-width:320px;padding:20px}
     .card.feature{width:82vw}
-    .brk{width:74px}.slot{width:80vw;max-width:300px}
+    .brk{width:74px}.tray{padding:12px}.tray .card{width:78vw;max-width:320px}
     .pop .head{padding:20px 20px 0}
     .pop .tabs{padding:16px 20px 0}
     .pop .rule{margin:0 20px}
@@ -217,7 +236,19 @@
 </style>
 </head>
 <body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <linearGradient id="hzGrad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#B0093C"/><stop offset="0.55" stop-color="#EE164F"/><stop offset="1" stop-color="#FAA32B"/>
+    </linearGradient></defs></svg>
   <div id="hz">
+    <div class="controls">
+      <div class="prog"><span class="dot"></span><span class="tm">08:30</span><span class="line"></span><span class="tm">17:30</span><span class="dot end"></span></div>
+      <div class="nav">
+        <button class="arrow" type="button" data-dir="-1" aria-label="Scroll left">&larr;</button>
+        <button class="arrow" type="button" data-dir="1" aria-label="Scroll right">&rarr;</button>
+        <span class="hint">Swipe / drag &rarr;</span>
+      </div>
+    </div>
     <div class="rail" id="rail" role="list" aria-label="Event agenda"></div>
   </div>
 
@@ -305,9 +336,9 @@
                `How HiBob is translating this vision into its next chapter of innovation`],
         speakers:[{id:'tali',badge:'Presented by'},{id:'yoni',badge:'Presented by'}]},
 
-      {type:'break', time:'10:50–11:20', name:'Coffee'},
+      {type:'break', time:'10:50–11:20', name:'Coffee', icon:'coffee'},
 
-      {type:'slot', label:'Breakouts I', time:'11:20–12:20', note:'Choose one of three rooms'},
+      {type:'slot', label:'Breakouts I', time:'11:20–12:20', note:'Choose one'},
 
       {type:'breakout', id:'ai-readiness', time:'11:20–12:20', title:'AI Readiness: Are You Building or Just Buying?', loc:'University Stage',
         teaser:`Benchmark research on the AI maturity curve — and the leaders living it.`,
@@ -339,9 +370,9 @@
         speakers:[{id:'natalie',badge:'Host'}],
         more:`More speakers to be announced soon.`},
 
-      {type:'break', time:'12:20–13:20', name:'Lunch'},
+      {type:'break', time:'12:20–13:20', name:'Lunch', icon:'lunch'},
 
-      {type:'slot', label:'Breakouts II', time:'13:20–14:20', note:'Choose one of three rooms'},
+      {type:'slot', label:'Breakouts II', time:'13:20–14:20', note:'Choose one'},
 
       {type:'breakout', id:'value-of-work', time:'13:20–14:20', title:'The New Value of Work: Hello Tokens, Goodbye Salaries?', loc:'University Stage',
         teaser:`HR, Finance and IT leaders rewrite pay, jobs and workforce planning — together.`,
@@ -372,9 +403,9 @@
         speakers:[{id:'laura',badge:'Host'}],
         more:`Speakers to be announced soon.`},
 
-      {type:'break', time:'14:20–14:45', name:'Coffee'},
+      {type:'break', time:'14:20–14:45', name:'Coffee', icon:'coffee'},
 
-      {type:'plenary', id:'closing', feature:true, time:'14:55–15:40', title:'Closing Keynote: Human + Machine = Better Together', loc:'Town Hall',
+      {type:'plenary', id:'closing', kicker:'Closing keynote', time:'14:55–15:40', title:'Closing Keynote: Human + Machine = Better Together', loc:'Town Hall',
         teaser:`Dr. Hannah Fry on why humans and machines are better together.`,
         desc:`Mathematician and broadcaster Dr. Hannah Fry closes the day with a keynote on how humans and machines can work better together — and what that collaboration means for leadership and the future of work.`,
         speakers:[{id:'hannah',badge:'Keynote'}]},
@@ -407,34 +438,67 @@
     }
 
     /* ============ render rail ============ */
-    var rail=document.getElementById('rail');
-    SESSIONS.forEach(function(x){
-      var node;
-      if(x.type==='break'){
-        node=el('<div class="brk"><div class="ic"></div><div class="t">'+x.time+'</div><div class="n">'+x.name+'</div></div>');
-      } else if(x.type==='slot'){
-        node=el('<div class="slot"><div class="k">'+x.label+'</div><div class="tm">'+x.time+'</div>'+
-                '<div class="l">Choose<br>your<br>room</div><div class="note">'+x.note+'</div><div class="arrow">→</div></div>');
-      } else {
-        var trk = x.type==='breakout' ? (TRACK[x.loc]||'#EE164F') : null;
-        var avs='';
-        if(x.speakers && x.speakers.length){
-          var shown=x.speakers.slice(0,3).map(function(sp){return avatar(sp.id,'av');}).join('');
-          if(x.more) shown+='<span class="av more">+</span>';
-          avs='<div class="avs">'+shown+'</div>';
-        }
-        var cls='card '+x.type+(x.feature?' feature':'');
-        node=el('<button class="'+cls+'" data-id="'+x.id+'" role="listitem"'+(trk?' style="--trk:'+trk+'"':'')+'>'+
-          '<div class="time">'+x.time+'</div>'+
-          '<h3>'+esc(x.title)+'</h3>'+
-          '<div class="teaser">'+esc(x.teaser)+'</div>'+
-          '<div class="loc">'+esc(x.loc)+'</div>'+
-          '<div class="foot">'+avs+'<span class="go">Details <span>&rarr;</span></span></div>'+
-        '</button>');
-        node.addEventListener('click',function(){ open(x); });
+    var COFFEE='<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">'+
+      '<path fill="url(#hzGrad)" d="M4.5 9h10v4.5A4.5 4.5 0 0 1 10 18H9a4.5 4.5 0 0 1-4.5-4.5z"/>'+
+      '<path fill="none" stroke="url(#hzGrad)" stroke-width="1.6" d="M14.5 10.2h1.9a2.3 2.3 0 0 1 0 4.6H14.5"/>'+
+      '<rect x="4" y="19.4" width="11" height="1.6" rx="0.8" fill="url(#hzGrad)"/>'+
+      '<path fill="none" stroke="url(#hzGrad)" stroke-width="1.4" stroke-linecap="round" d="M7.5 6.2c-.8-.9.3-1.5-.5-2.4M11 6.2c-.8-.9.3-1.5-.5-2.4"/></svg>';
+    var LUNCH='<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" fill="url(#hzGrad)">'+
+      '<rect x="5.7" y="3" width="1.1" height="4.6" rx="0.55"/>'+
+      '<rect x="7.45" y="3" width="1.1" height="4.6" rx="0.55"/>'+
+      '<rect x="9.2" y="3" width="1.1" height="4.6" rx="0.55"/>'+
+      '<rect x="5.7" y="6.7" width="4.6" height="2.3" rx="1.15"/>'+
+      '<rect x="7.45" y="8.6" width="1.1" height="12.4" rx="0.55"/>'+
+      '<path d="M14.5 3h1c1.3 0 2 1.5 2 3.6s-.7 3.6-2 3.6h-1z"/>'+
+      '<rect x="14.5" y="9.6" width="1.1" height="11.4" rx="0.55"/></svg>';
+
+    var down=false,sx=0,sl=0,dragMoved=false;
+    function makeCard(x){
+      var trk = x.type==='breakout' ? (TRACK[x.loc]||'#EE164F') : null;
+      var avs='';
+      if(x.speakers && x.speakers.length){
+        var shown=x.speakers.slice(0,3).map(function(sp){return avatar(sp.id,'av');}).join('');
+        if(x.more) shown+='<span class="av more">+</span>';
+        avs='<div class="avs">'+shown+'</div>';
       }
-      rail.appendChild(node);
+      var cls='card '+x.type+(x.feature?' feature':'');
+      var node=el('<button class="'+cls+'" data-id="'+x.id+'" role="listitem"'+(trk?' style="--trk:'+trk+'"':'')+'>'+
+        '<div class="time">'+x.time+'</div><h3>'+esc(x.title)+'</h3>'+
+        '<div class="teaser">'+esc(x.teaser)+'</div><div class="loc">'+esc(x.loc)+'</div>'+
+        '<div class="foot">'+avs+'<span class="go">Details <span>&rarr;</span></span></div></button>');
+      node.addEventListener('click',function(){ if(dragMoved){dragMoved=false;return;} open(x); });
+      return node;
+    }
+
+    var rail=document.getElementById('rail');
+    for(var i=0;i<SESSIONS.length;i++){
+      var x=SESSIONS[i];
+      if(x.type==='break'){
+        rail.appendChild(el('<div class="brk"><div class="ic">'+(x.icon==='lunch'?LUNCH:COFFEE)+
+          '</div><div class="t">'+x.time+'</div><div class="n">'+x.name+'</div></div>'));
+      } else if(x.type==='slot'){
+        var tray=el('<div class="tray"><div class="tray-head"><div><div class="k">'+x.label+
+          '</div><div class="tm">'+x.time+'</div></div><div class="ch">'+x.note+'</div></div>'+
+          '<div class="tray-cards"></div></div>');
+        var wrap=tray.querySelector('.tray-cards');
+        while(i+1<SESSIONS.length && SESSIONS[i+1].type==='breakout'){ i++; wrap.appendChild(makeCard(SESSIONS[i])); }
+        rail.appendChild(tray);
+      } else {
+        rail.appendChild(makeCard(x));
+      }
+    }
+
+    /* ---- rail navigation: arrows + click-drag (native swipe/trackpad also work) ---- */
+    document.querySelectorAll('.nav .arrow').forEach(function(b){
+      b.addEventListener('click',function(){
+        var it=rail.querySelector('.tray, .card');
+        var step=(it?it.getBoundingClientRect().width:320)+16;
+        rail.scrollBy({left:step*parseInt(b.dataset.dir,10),behavior:'smooth'});
+      });
     });
+    rail.addEventListener('mousedown',function(e){down=true;dragMoved=false;sx=e.pageX;sl=rail.scrollLeft;rail.classList.add('drag');});
+    window.addEventListener('mouseup',function(){down=false;rail.classList.remove('drag');});
+    rail.addEventListener('mousemove',function(e){if(!down)return;e.preventDefault();if(Math.abs(e.pageX-sx)>5)dragMoved=true;rail.scrollLeft=sl-(e.pageX-sx);});
 
     /* ============ popover ============ */
     var pop=document.getElementById('pop'),
@@ -468,9 +532,9 @@
     }
     function open(x){
       lastFocus=document.activeElement;
-      var kick = x.type==='breakout' ? 'Breakout · Choose one'
-               : x.type==='social' ? 'On the day'
-               : x.feature ? 'Closing keynote' : 'Session';
+      var kick = x.kicker ? x.kicker
+               : x.type==='breakout' ? 'Breakout · Choose one'
+               : x.type==='social' ? 'On the day' : 'Session';
       popKicker.textContent=kick;
       popTitle.textContent=x.title;
       var trk = x.type==='breakout' ? (TRACK[x.loc]||'#EE164F') : null;

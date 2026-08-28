@@ -339,7 +339,7 @@
 
       {type:'break', time:'10:50–11:20', name:'Coffee', icon:'coffee'},
 
-      {type:'slot', label:'Breakouts I', time:'11:20–12:20', note:'Choose one'},
+      {type:'slot', label:'Choose Your Track', time:'11:20–12:20', note:'3 rooms'},
 
       {type:'breakout', id:'ai-readiness', time:'11:20–12:20', title:'AI Readiness: Are You Building or Just Buying?', loc:'University Stage',
         teaser:`Benchmark research on the AI maturity curve — and the leaders living it.`,
@@ -373,7 +373,7 @@
 
       {type:'break', time:'12:20–13:20', name:'Lunch', icon:'lunch'},
 
-      {type:'slot', label:'Breakouts II', time:'13:20–14:20', note:'Choose one'},
+      {type:'slot', label:'Choose Your Track', time:'13:20–14:20', note:'3 rooms'},
 
       {type:'breakout', id:'value-of-work', time:'13:20–14:20', title:'The New Value of Work: Hello Tokens, Goodbye Salaries?', loc:'University Stage',
         teaser:`HR, Finance and IT leaders rewrite pay, jobs and workforce planning — together.`,
@@ -420,9 +420,13 @@
         speakers:[{id:'toby',badge:'Host'},{id:'adena',badge:'Participant'}],
         more:`More participants announced soon.`},
 
-      {type:'social', id:'sendoff', time:'16:30–17:45', title:'Send-off & Happy Hour', loc:'HiBob City',
-        teaser:`Close the day with drinks, bites and conversation in HiBob City.`,
-        desc:`Close the day with drinks, bites and informal conversation in HiBob City — time to connect with fellow leaders and reflect on what's ahead.`}
+      {type:'social', id:'conclude', time:'16:30–16:45', title:'Conclude the Day', loc:'Town Hall',
+        teaser:`A short send-off to close the day together before drinks.`,
+        desc:`A brief send-off to close the day together — a moment to reflect on what we heard and what comes next, before the conversation continues over drinks.`},
+
+      {type:'social', id:'happyhour', time:'16:45–17:45', title:'Happy Hour', loc:'HiBob City',
+        teaser:`Drinks, bites and conversation to close the day in HiBob City.`,
+        desc:`Close the day with drinks, bites and informal conversation in HiBob City — an hour to connect with fellow leaders and reflect on what's ahead.`}
     ];
 
     /* ============ helpers ============ */
@@ -540,7 +544,7 @@
     function open(x){
       lastFocus=document.activeElement;
       var kick = x.kicker ? x.kicker
-               : x.type==='breakout' ? 'Breakout · Choose one'
+               : x.type==='breakout' ? 'Choose your track'
                : x.type==='social' ? 'On the day' : 'Session';
       popKicker.textContent=kick;
       popTitle.textContent=x.title;

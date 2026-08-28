@@ -1,0 +1,312 @@
+<!doctype html>
+<!-- ============================================================
+     HORIZONS 2026 — SPEAKERS (self-contained iframe)
+     Host on GitHub Pages + embed via <iframe src="...">.
+     Suggested iframe height: ~560px desktop / ~540px mobile.
+
+     Inverted light treatment: tan background, cream cards, dark text.
+     Horizontal rail of speaker cards (headshot + title). Click a card ->
+     edge-to-edge popover with the full bio + the sessions they appear in.
+
+     EDIT POINTS: the SPEAKERS array below. Headshots auto-load from
+     speakers/<id>.jpg (same folder as the agenda uses); a missing file falls
+     back to the initials placeholder. Change PHOTO_BASE/PHOTO_EXT to relocate.
+     ============================================================ -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Horizons 2026 — Speakers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Domine:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wine:#3D001A; --wine2:#60032A; --cherry:#EE164F; --orange:#FAA32B;
+    --cream:#FDF6EB; --sand:#F7E7CE; --ink:#1C0510; --cocoa:#B0093C;
+    --card:#FFFDF8;                 /* the "white" card on the tan bg */
+    --grad:linear-gradient(120deg,#FAA32B,#EE164F 55%,#B0093C);
+    --muted:#8a5a44; --line:rgba(28,5,16,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{background:var(--sand);color:var(--ink);font-family:'Domine',serif;
+    -webkit-font-smoothing:antialiased;overflow:hidden}
+  #hz{position:relative;height:100%;min-height:520px;display:flex;flex-direction:column}
+
+  /* ---------- CONTROLS ---------- */
+  .controls{flex:0 0 auto;padding:18px 22px 0;display:flex;flex-direction:column;gap:13px}
+  .nav{display:flex;align-items:center;gap:10px}
+  .nav .arrow{width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(61,0,26,.35);
+    background:transparent;color:var(--wine);font-size:19px;line-height:1;cursor:pointer;
+    display:grid;place-items:center;font-family:'Domine',serif;-webkit-appearance:none;appearance:none;
+    transition:background .2s,color .2s,transform .2s}
+  .nav .arrow:hover{background:var(--wine);color:var(--cream);transform:translateY(-2px)}
+  .nav .hint{margin-left:auto;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--muted)}
+
+  /* ---------- RAIL ---------- */
+  .rail{flex:1;display:flex;gap:16px;align-items:center;overflow-x:auto;overflow-y:hidden;
+    padding:22px;scroll-snap-type:x proximity;cursor:grab;
+    scrollbar-width:thin;scrollbar-color:rgba(61,0,26,.3) transparent}
+  .rail.drag{cursor:grabbing;scroll-snap-type:none}
+  .rail::-webkit-scrollbar{height:8px}
+  .rail::-webkit-scrollbar-thumb{background:rgba(61,0,26,.22);border-radius:8px}
+
+  /* ---------- SPEAKER CARD (full-bleed portrait) ---------- */
+  .card{scroll-snap-align:start;flex:0 0 auto;width:238px;display:flex;flex-direction:column;
+    background:var(--card);border-radius:20px;overflow:hidden;position:relative;
+    border:none;-webkit-appearance:none;appearance:none;margin:0;padding:0;color:var(--ink);cursor:pointer;
+    font:inherit;text-align:left;transition:transform .18s cubic-bezier(.16,1,.3,1)}
+  .card:hover,.card:focus-visible{transform:translateY(-6px);outline:none}
+  .portrait{width:100%;aspect-ratio:1/1;position:relative;background:var(--grad);
+    display:grid;place-items:center;font-family:'Archivo Black',sans-serif;font-size:2.1rem;color:var(--cream)}
+  .portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .accent{flex:0 0 auto;height:4px;background:var(--grad)}
+  .info{flex:0 0 auto;padding:15px 18px 17px;display:flex;flex-direction:column;min-height:126px}
+  .info h3{margin:0;font-family:'Archivo Black',sans-serif;text-transform:uppercase;
+    font-size:1.04rem;line-height:1.08;letter-spacing:.005em;color:var(--ink);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .info .title{margin:6px 0 0;font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.03em;
+    line-height:1.4;text-transform:uppercase;color:var(--cocoa);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .info .foot{margin-top:13px;display:flex;align-items:center;gap:7px;font-family:'Space Mono',monospace;
+    font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--cherry)}
+  .info .foot span{transition:transform .18s}
+  .card:hover .foot span{transform:translateX(3px)}
+
+  /* ---------- POPOVER ---------- */
+  .pop{position:fixed;inset:0;z-index:50;display:none}
+  .pop.open{display:block}
+  .pop .backdrop{position:absolute;inset:0;background:rgba(20,3,11,.6);backdrop-filter:blur(3px);
+    opacity:0;transition:opacity .25s}
+  .pop.open .backdrop{opacity:1}
+  .pop .panel{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--card);color:var(--ink);
+    transform:translateY(14px);opacity:0;transition:transform .28s cubic-bezier(.16,1,.3,1),opacity .28s}
+  .pop.open .panel{transform:none;opacity:1}
+
+  .pop .head{position:relative;padding:26px 28px 20px;display:flex;gap:22px;align-items:center;flex:0 0 auto;
+    border-bottom:1px solid var(--line)}
+  .pop .hpic{flex:0 0 auto;width:96px;height:96px;border-radius:20px;overflow:hidden;position:relative;
+    background:var(--grad);display:grid;place-items:center;font-family:'Archivo Black',sans-serif;
+    font-size:1.7rem;color:var(--cream)}
+  .pop .hpic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .pop .hmeta{min-width:0}
+  .pop .kicker{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--cherry);margin:0 0 8px}
+  .pop .head h2{margin:0;font-family:'Archivo Black',sans-serif;text-transform:uppercase;
+    font-size:clamp(1.3rem,3vw,1.9rem);line-height:1.03;letter-spacing:.005em}
+  .pop .head .role{margin:9px 0 0;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.03em;
+    color:var(--cocoa)}
+  .pop .close{position:absolute;top:22px;right:22px;width:42px;height:42px;border-radius:50%;
+    border:1.5px solid var(--wine);background:transparent;color:var(--wine);cursor:pointer;font-size:22px;
+    line-height:1;display:grid;place-items:center;transition:background .18s,color .18s;
+    -webkit-appearance:none;appearance:none}
+  .pop .close:hover{background:var(--wine);color:var(--cream)}
+
+  .pop .body{flex:1;overflow-y:auto;padding:24px 28px 32px;-webkit-overflow-scrolling:touch}
+  .bio{font-family:'Domine',serif;font-size:clamp(15px,1.7vw,17px);line-height:1.6;color:#3a2732;max-width:72ch;margin:0}
+  .sess-h{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--cherry);margin:28px 0 14px}
+  .sess{display:flex;flex-direction:column;gap:12px;max-width:760px}
+  .sess-row{display:flex;gap:16px;align-items:flex-start;padding:15px 17px;border-radius:14px;background:var(--sand)}
+  .sess-row .t{flex:0 0 auto;font-family:'Space Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.02em;
+    color:var(--wine);width:104px;line-height:1.35}
+  .sess-row .st{min-width:0}
+  .sess-row .st .nm{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:.95rem;line-height:1.08;
+    color:var(--ink)}
+  .sess-row .st .lo{margin-top:6px;font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted)}
+  .sess-row .badge{flex:0 0 auto;margin-left:auto;align-self:center;font-family:'Space Mono',monospace;font-weight:700;
+    font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:20px;
+    background:var(--wine);color:var(--cream);white-space:nowrap}
+
+  /* ---------- MOBILE ---------- */
+  @media (max-width:600px){
+    .controls{padding:14px 16px 0}
+    .nav .arrow{width:40px;height:40px}
+    .rail{gap:12px;padding:16px;scroll-snap-type:x mandatory}
+    .card{width:74vw;max-width:280px}
+    .pop .head{padding:20px 18px 18px;gap:16px}
+    .pop .hpic{width:74px;height:74px}
+    .pop .body{padding:20px 18px 28px}
+    .sess-row{flex-wrap:wrap}
+    .sess-row .badge{margin-left:0}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+  <div id="hz">
+    <div class="controls">
+      <div class="nav">
+        <button class="arrow" type="button" data-dir="-1" aria-label="Scroll left">&larr;</button>
+        <button class="arrow" type="button" data-dir="1" aria-label="Scroll right">&rarr;</button>
+        <span class="hint">Swipe / drag &rarr;</span>
+      </div>
+    </div>
+    <div class="rail" id="rail" role="list" aria-label="Speakers"></div>
+  </div>
+
+  <div class="pop" id="pop" role="dialog" aria-modal="true" aria-labelledby="popTitle">
+    <div class="backdrop" data-close></div>
+    <div class="panel">
+      <div class="head">
+        <button class="close" id="popClose" aria-label="Close">✕</button>
+        <div class="hpic" id="popPic"></div>
+        <div class="hmeta">
+          <p class="kicker" id="popKicker">Speaker</p>
+          <h2 id="popTitle"></h2>
+          <p class="role" id="popRole"></p>
+        </div>
+      </div>
+      <div class="body" id="popBody"></div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    /* ============ SPEAKERS — keynote -> HiBob (by seniority) -> guests ============
+       Each has: name, title, bio, and the sessions they appear in.
+       photo auto-loads from speakers/<id>.jpg (set photo:'…' to override). */
+    var SPEAKERS = [
+      {id:'hannah', name:'Dr. Hannah Fry', title:'Mathematician & Broadcaster · University of Cambridge',
+        bio:`Mathematician, broadcaster and Professor for the Public Understanding of Mathematics at the University of Cambridge. She studies patterns in human behaviour and brings complex ideas to life with her signature wit and warmth. Her work includes the Emmy-winning The Future with Hannah Fry (Bloomberg) and AI Confidential with Hannah Fry (BBC Two), and she is the author of Hello World: How to Be Human in the Age of the Machine.`,
+        sessions:[{t:'14:55–15:40',nm:'Closing Keynote: Human + Machine = Better Together',lo:'Town Hall',role:'Keynote'}]},
+
+      {id:'ronni', name:'Ronni Zehavi', title:'Co-Founder & CEO, HiBob',
+        bio:`Co-Founder and CEO of HiBob, with 25+ years in multinational hi-tech. Previously an Entrepreneur in Residence at Bessemer Venture Partners, and co-founder/CEO of Cotendo — a content delivery network acquired by Akamai for $300M just four years after founding. He is also a strategic advisor and co-founder of Team8 Cyber Security.`,
+        sessions:[{t:'09:40–10:00',nm:'The Great Redesign: People, AI & the Organisation',lo:'Town Hall',role:'In conversation'}]},
+
+      {id:'toby', name:'Toby Hough', title:'VP, People & Culture (EMEA), HiBob',
+        bio:`VP, People & Culture for EMEA at HiBob, leading HR strategy, operations and employee experience across the region, plus Customer Success globally. Over a decade in HR leadership across scale-ups and high-growth organisations — from the London Olympics and Paralympics to Silicon Valley and London startups — after beginning his career in management consulting at Deloitte.`,
+        sessions:[{t:'09:30–09:40',nm:'Welcome Address',lo:'Town Hall',role:'Host'},
+                  {t:'15:45–16:30',nm:'The Fishbowl: What We Heard, What We Challenge, What Comes Next',lo:'Town Hall',role:'Host'}]},
+
+      {id:'tali', name:'Tali Chuchinsky', title:'VP, Product Marketing, HiBob',
+        bio:`VP of Product Marketing at HiBob, connecting the product vision with market positioning, go-to-market and commercial growth. Previously spent seven years at Similarweb in leadership roles across strategy, product marketing, pricing and GTM — helping scale the company from ~$40M ARR through its IPO. She began her career at Boston Consulting Group.`,
+        sessions:[{t:'09:40–10:00',nm:'The Great Redesign: People, AI & the Organisation',lo:'Town Hall',role:'In conversation'},
+                  {t:'10:00–10:25',nm:'Vision Into Action: Building the Adaptive Organisation',lo:'Town Hall',role:'Presented by'}]},
+
+      {id:'stacey', name:'Stacey Matson', title:'VP, Customer Growth, HiBob',
+        bio:`VP of Customer Growth at HiBob and an experienced SaaS leader with 20+ years building and scaling customer and commercial organisations. She is passionate about customer-led growth, high-performing teams, and cultures where commercial ambition and people-first leadership go hand in hand.`,
+        sessions:[{t:'13:20–14:20',nm:'The New Value of Work: Hello Tokens, Goodbye Salaries?',lo:'University Stage',role:'Host'}]},
+
+      {id:'rami', name:'Rami Tzafrir', title:'VP, People Growth, HiBob',
+        bio:`VP, People Growth at HiBob. Full bio coming soon.`,
+        sessions:[{t:'13:20–14:20',nm:'If You Built Your Workforce Today, Would It Look Like This?',lo:'Workshop Studio',role:'Host'}]},
+
+      {id:'ken', name:'Kenneth Matos, Ph.D.', title:'Director, Insights Lab, HiBob',
+        bio:`Director, Insights Lab at HiBob, where he researches global HR trends and employee experience. A former consultant to global organisations, he has published on inclusion, wellbeing, leadership and culture. He holds degrees from Amherst, Cornell and The George Washington University, and speaks frequently on engagement, flexibility and workplace culture.`,
+        sessions:[{t:'11:20–12:20',nm:'AI Readiness: Are You Building or Just Buying?',lo:'University Stage',role:'Host'}]},
+
+      {id:'yoni', name:'Yoni Friedman', title:'Director of Core AI, HiBob',
+        bio:`Director of Core AI at HiBob. Full bio coming soon.`,
+        sessions:[{t:'10:00–10:25',nm:'Vision Into Action: Building the Adaptive Organisation',lo:'Town Hall',role:'Presented by'}]},
+
+      {id:'adena', name:'Adena White, Ph.D.', title:'Market Insights Lead, HiBob',
+        bio:`Market Insights Lead at HiBob, researching global trends in employee experience, HR best practices and the impact of AI on the world of work. With a background spanning scientific research, business strategy and technology, she brings a strategic perspective to the future of work and speaks widely on AI, employee experience and wellbeing.`,
+        sessions:[{t:'11:20–12:20',nm:'The AI-Ready Organisation: From Skills Gaps to Workforce Advantage',lo:'Workshop',role:'Host'},
+                  {t:'15:45–16:30',nm:'The Fishbowl: What We Heard, What We Challenge, What Comes Next',lo:'Town Hall',role:'Participant'}]},
+
+      {id:'laura', name:'Laura Fink', title:'People & Culture Director, HiBob',
+        bio:`People & Culture Director at HiBob. Full bio coming soon.`,
+        sessions:[{t:'13:20–14:20',nm:'The Employment Rights Act: January Is Coming',lo:'In Good Company Café',role:'Host'}]},
+
+      {id:'hayley', name:'Hayley Mann', title:'Chief People Officer, Formula E',
+        bio:`Chief People Officer at Formula E, with nearly 15 years across hospitality, beauty, retail and sport. She partners with the CEO and executive team to run the people agenda through all strategy and decision-making, translating high-performance culture into how teams work — and is a passionate advocate for authentic, inclusive leadership.`,
+        sessions:[{t:'13:20–14:20',nm:'The New Value of Work: Hello Tokens, Goodbye Salaries?',lo:'University Stage',role:'Speaker'}]},
+
+      {id:'robert', name:'Robert Hicks', title:'Interim People Director, Zepz',
+        bio:`Interim People Director at Zepz — the global payments company behind WorldRemit — and an award-winning people leader with 25+ years shaping HR strategy across high-growth tech, PE-backed and complex global organisations. Previously held senior people roles at Reward Gateway and Atheneum, with deep expertise in culture, transformation and scaling teams.`,
+        sessions:[{t:'11:20–12:20',nm:'AI Readiness: Are You Building or Just Buying?',lo:'University Stage',role:'Panelist'}]},
+
+      {id:'darren', name:'Darren Cross, FCIPD', title:'Director of People & Culture, Raspberry Pi Foundation',
+        bio:`Director of People & Culture at the Raspberry Pi Foundation, leading People & Culture strategy across its international operations. A Fellow of the CIPD with 20+ years in HR, bringing deep expertise in organisational culture, people strategy, and guiding organisations and their people through change and growth.`,
+        sessions:[{t:'11:20–12:20',nm:'The AI-Ready Organisation: From Skills Gaps to Workforce Advantage',lo:'Workshop',role:'Speaker'}]},
+
+      {id:'natalie', name:'Natalie Neilson', title:'Founder & Director, TTM Coaching',
+        bio:`ICF-accredited coach, writer, facilitator, founder and co-host of The Power of You podcast. Her work bridges individual growth and organisational performance — exploring how people navigate growth, change, uncertainty and complexity, and helping organisations develop their people, performance and culture.`,
+        sessions:[{t:'11:20–12:20',nm:'Trust by Design: Where AI, Privacy & People Meet',lo:'In Good Company Café',role:'Host'}]}
+    ];
+
+    /* headshots: speakers/<id>.jpg (shared with the agenda), initials fallback */
+    var PHOTO_BASE='speakers/', PHOTO_EXT='.jpg';
+    function initials(n){
+      var p=n.replace(/,.*$/,'').replace(/\b(Dr|Ph\.?D|MBA|FCIPD)\b\.?/gi,'').trim().split(/\s+/);
+      return ((p[0]||'')[0]||'')+((p[p.length-1]||'')[0]||'');
+    }
+    function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+    function el(h){var t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstChild;}
+    function photoInner(sp){
+      var url = sp.photo || (PHOTO_BASE + sp.id + PHOTO_EXT);
+      return esc(initials(sp.name))+'<img src="'+url+'" alt="'+esc(sp.name)+'" loading="lazy" onerror="this.remove()">';
+    }
+
+    /* ---------- render cards ---------- */
+    var down=false,sx=0,sl=0,dragMoved=false;
+    var rail=document.getElementById('rail');
+    SPEAKERS.forEach(function(sp){
+      var n=sp.sessions.length;
+      var node=el('<button class="card" role="listitem">'+
+        '<div class="portrait">'+photoInner(sp)+'</div>'+
+        '<div class="accent"></div>'+
+        '<div class="info"><h3>'+esc(sp.name)+'</h3>'+
+        '<div class="title">'+esc(sp.title)+'</div>'+
+        '<div class="foot">Bio &amp; '+n+' session'+(n>1?'s':'')+' <span>&rarr;</span></div></div>'+
+      '</button>');
+      node.addEventListener('click',function(){ if(dragMoved){dragMoved=false;return;} open(sp); });
+      rail.appendChild(node);
+    });
+
+    /* ---------- rail nav: arrows + click-drag ---------- */
+    document.querySelectorAll('.nav .arrow').forEach(function(b){
+      b.addEventListener('click',function(){
+        var it=rail.querySelector('.card'); var step=(it?it.getBoundingClientRect().width:252)+16;
+        rail.scrollBy({left:step*parseInt(b.dataset.dir,10),behavior:'smooth'});
+      });
+    });
+    rail.addEventListener('mousedown',function(e){down=true;dragMoved=false;sx=e.pageX;sl=rail.scrollLeft;rail.classList.add('drag');});
+    window.addEventListener('mouseup',function(){down=false;rail.classList.remove('drag');});
+    rail.addEventListener('mousemove',function(e){if(!down)return;e.preventDefault();if(Math.abs(e.pageX-sx)>5)dragMoved=true;rail.scrollLeft=sl-(e.pageX-sx);});
+
+    /* ---------- popover ---------- */
+    var pop=document.getElementById('pop'), popPic=document.getElementById('popPic'),
+        popTitle=document.getElementById('popTitle'), popRole=document.getElementById('popRole'),
+        popBody=document.getElementById('popBody'), popClose=document.getElementById('popClose');
+    var lastFocus=null;
+
+    function open(sp){
+      lastFocus=document.activeElement;
+      popPic.innerHTML=photoInner(sp);
+      popTitle.textContent=sp.name;
+      popRole.textContent=sp.title;
+      var h='<p class="bio">'+esc(sp.bio)+'</p>';
+      if(sp.sessions && sp.sessions.length){
+        h+='<p class="sess-h">Appearing in</p><div class="sess">';
+        sp.sessions.forEach(function(s){
+          h+='<div class="sess-row"><div class="t">'+s.t+'</div>'+
+             '<div class="st"><div class="nm">'+esc(s.nm)+'</div><div class="lo">'+esc(s.lo)+'</div></div>'+
+             '<div class="badge">'+esc(s.role)+'</div></div>';
+        });
+        h+='</div>';
+      }
+      popBody.innerHTML=h;
+      pop.classList.add('open'); document.body.style.overflow='hidden'; popClose.focus();
+    }
+    function close(){ pop.classList.remove('open'); document.body.style.overflow=''; popBody.scrollTop=0;
+      if(lastFocus&&lastFocus.focus) lastFocus.focus(); }
+    popClose.addEventListener('click',close);
+    pop.querySelector('[data-close]').addEventListener('click',close);
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&pop.classList.contains('open')) close(); });
+    pop.addEventListener('keydown',function(e){
+      if(e.key!=='Tab'||!pop.classList.contains('open')) return;
+      var f=pop.querySelectorAll('button,[href],[tabindex]:not([tabindex="-1"])'); if(!f.length) return;
+      var first=f[0], last=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+    });
+  })();
+  </script>
+</body>
+</html>

@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Horizons — Hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{height:100%;background:#3D001A}
@@ -35,9 +38,26 @@
      KNOB: width below scales the whole headline. */
   .hero-type{
     position:absolute;inset:0;z-index:3;
-    display:flex;align-items:center;justify-content:center;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
     padding:0 5vw;
   }
+
+  /* ---- DATE / TIME (ticker style, fades in as the headline lands) ---- */
+  .hero-meta{
+    display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+    gap:clamp(12px,2vw,24px);margin-top:clamp(22px,4vh,44px);
+    opacity:0;animation:hz-meta-in .9s cubic-bezier(.16,1,.3,1) 3.1s both;
+  }
+  .hero-meta span{
+    font-family:'Archivo Black',sans-serif;text-transform:uppercase;color:#FDF6EB;
+    font-size:clamp(13px,1.7vw,22px);letter-spacing:.05em;line-height:1;white-space:nowrap;
+  }
+  .hero-meta .sep{
+    width:10px;height:10px;border-radius:50%;flex:0 0 auto;
+    background:linear-gradient(120deg,#FAA32B,#EE164F 60%,#B0093C);
+  }
+  @keyframes hz-meta-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){ .hero-meta{animation:none;opacity:1} }
   #headline{
     width:min(92vw,1100px);height:auto;overflow:visible;
     filter:drop-shadow(0 2px 30px rgba(28,5,16,.5));
@@ -109,6 +129,11 @@
       <path d="M 165.955,23.516 C 163.915,23.516 162.463,22.196 162.463,20.216 C 162.463,18.236 163.987,16.856 165.967,16.856 C 168.007,16.856 169.447,18.176 169.447,20.144 C 169.447,22.124 167.935,23.516 165.955,23.516 M 166.003,22.556 C 166.819,22.556 167.143,21.884 167.143,20.18 C 167.143,18.452 166.759,17.804 165.919,17.804 C 165.103,17.804 164.779,18.476 164.779,20.192 C 164.779,21.908 165.163,22.556 166.003,22.556"/>
       <path d="M 170.421,23.372 L 170.421,22.196 L 171.333,22.196 L 171.333,18.164 L 170.421,18.164 L 170.421,16.988 L 173.313,16.988 L 173.313,18.68 C 173.709,17.636 174.393,16.856 175.605,16.856 C 177.045,16.856 177.597,17.816 177.597,19.148 L 177.597,22.196 L 178.497,22.196 L 178.497,23.372 L 174.789,23.372 L 174.789,22.196 L 175.485,22.196 L 175.485,19.376 C 175.485,18.968 175.401,18.644 175.197,18.452 C 175.053,18.308 174.861,18.236 174.597,18.236 C 173.985,18.236 173.457,18.848 173.457,19.7 L 173.457,22.196 L 174.129,22.196 L 174.129,23.372 L 170.421,23.372"/>
     </svg>
+      <div class="hero-meta">
+        <span>Protein Studios, Shoreditch</span>
+        <span class="sep"></span>
+        <span>Wednesday 18 Nov 2026</span>
+      </div>
     </div>
 
   </div>

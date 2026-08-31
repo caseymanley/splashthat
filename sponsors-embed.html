@@ -1,0 +1,95 @@
+<!doctype html>
+<!-- ============================================================
+     HORIZONS 2026 — SPONSORS (self-contained iframe)
+     Host on GitHub Pages + embed via <iframe src="...">.
+     Suggested height: ~360px desktop / auto-stacks on mobile (~640px).
+     Logos are single-colour SVGs tinted cream via CSS. Add more by copying a
+     .logo block into the right tier. NOTE: confirm "outstail.svg" is the Oyster
+     mark — the filename was unusual.
+     ============================================================ -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Horizons 2026 — Sponsors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Domine:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--wine:#3D001A;--wine2:#60032A;--cherry:#EE164F;--orange:#FAA32B;--cream:#FDF6EB;--cocoa:#B0093C;}
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%}
+  body{background:var(--wine);color:var(--cream);font-family:'Domine',serif;
+    -webkit-font-smoothing:antialiased;overflow:hidden}
+  /* soft sunrise glow, top-right */
+  .stage{position:relative;height:100%;min-height:320px;overflow:hidden;
+    display:flex;align-items:center}
+  .stage::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(85% 130% at 92% 6%, rgba(250,163,43,.16), rgba(238,22,79,.07) 34%, transparent 64%)}
+  /* faint horizon dot texture */
+  .stage::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:radial-gradient(rgba(253,246,235,.05) 1px, transparent 1.4px);background-size:6px 6px}
+
+  .wrap{position:relative;z-index:1;width:100%;max-width:1200px;margin:0 auto;
+    padding:clamp(30px,5vw,56px);display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(28px,5vw,64px);
+    align-items:center}
+
+  .kick{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--orange);margin-bottom:14px}
+  h2{font-family:'Domine',serif;font-weight:600;font-size:clamp(26px,3.4vw,42px);line-height:1.02;
+    letter-spacing:-.01em}
+  h2 .g{background:linear-gradient(120deg,#FAA32B,#EE164F 55%,#B0093C);-webkit-background-clip:text;
+    background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+  .lede{margin-top:16px;font-size:clamp(14px,1.4vw,16px);line-height:1.55;color:rgba(253,246,235,.82);
+    max-width:46ch}
+
+  /* logos: one aligned row, relative sizing carries the hierarchy (no labels) */
+  .logos{display:flex;flex-wrap:wrap;align-items:center;gap:clamp(34px,4.5vw,60px)}
+  .logo{position:relative;display:inline-flex;align-items:center}
+  .logo svg{display:block;width:auto;fill:var(--cream)}
+  .logo.big svg{height:clamp(38px,4.4vw,56px)}
+  .logo.big::before{content:"";position:absolute;inset:-45% -22%;z-index:-1;
+    background:radial-gradient(ellipse at center, rgba(250,163,43,.15), transparent 70%)}
+  .logo.sm svg{height:clamp(26px,2.8vw,37px)}
+
+  @media (max-width:760px){
+    body{overflow:auto}
+    .stage{min-height:0}
+    .wrap{grid-template-columns:1fr;gap:26px;padding:34px 24px}
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="wrap">
+      <div class="intro">
+        <p class="kick">Our partners</p>
+        <h2>Thank you to our <span class="g">sponsors.</span></h2>
+        <p class="lede">Horizons is brought to life with the support of organisations at the forefront of work, people and technology &mdash; thank you for shaping the day with us.</p>
+      </div>
+      <div class="logos">
+          <span class="logo big"><svg viewBox="0 0 1827.26 414.63" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Oyster"><g>
+    <path d="M641.18,360.96c-17.89,0-34.51-3.09-49.85-9.27-15.34-6.18-28.71-14.86-40.1-26.04-11.4-11.18-20.29-24.23-26.68-39.14-6.39-14.91-9.59-31.1-9.59-48.57s3.14-33.66,9.43-48.57c6.28-14.91,15.12-27.9,26.52-38.98,11.39-11.07,24.76-19.7,40.1-25.88,15.34-6.18,32.06-9.27,50.17-9.27s34.83,3.09,50.17,9.27c15.34,6.18,28.7,14.81,40.1,25.88,11.39,11.08,20.24,24.08,26.52,38.98,6.28,14.91,9.43,31.1,9.43,48.57s-3.2,33.66-9.59,48.57c-6.39,14.91-15.29,27.96-26.68,39.14-11.4,11.18-24.76,19.87-40.1,26.04-15.34,6.18-31.95,9.27-49.85,9.27ZM641.18,316.23c10.86,0,20.93-1.92,30.2-5.75,9.27-3.83,17.41-9.21,24.44-16.14,7.03-6.92,12.46-15.18,16.3-24.76,3.83-9.59,5.75-20.13,5.75-31.63s-1.92-21.99-5.75-31.47c-3.83-9.48-9.27-17.73-16.3-24.76-7.03-7.03-15.18-12.41-24.44-16.14-9.27-3.72-19.33-5.59-30.2-5.59s-20.93,1.87-30.2,5.59c-9.27,3.73-17.41,9.11-24.44,16.14-7.03,7.03-12.46,15.29-16.3,24.76-3.83,9.48-5.75,19.97-5.75,31.47s1.92,22.05,5.75,31.63c3.83,9.59,9.27,17.84,16.3,24.76,7.03,6.93,15.18,12.3,24.44,16.14,9.27,3.83,19.33,5.75,30.2,5.75Z"/>
+    <path d="M886.39,360.96c-18.75,0-35.47-3.94-50.17-11.82-14.7-7.88-26.26-18.69-34.67-32.43-8.42-13.74-12.62-29.34-12.62-46.81V119.08h49.53v147.62c0,9.38,2.08,17.84,6.23,25.4,4.15,7.56,9.85,13.48,17.1,17.73,7.24,4.26,15.44,6.39,24.6,6.39s17.62-2.13,24.76-6.39c7.13-4.26,12.78-10.17,16.94-17.73,4.15-7.56,6.23-16.03,6.23-25.4V119.08h49.53v150.82c0,17.47-4.21,33.07-12.62,46.81-8.42,13.74-19.97,24.55-34.67,32.43-14.7,7.88-31.42,11.82-50.17,11.82Z"/>
+    <path d="M1059.85,357.13v-194.92h-60.39v-43.14h169.35v43.14h-59.43v194.92h-49.53Z"/>
+    <path d="M1267.83,360.96c-14.91,0-28.92-2.72-42.02-8.15-13.1-5.43-24.39-13.15-33.87-23.17-9.48-10.01-16.57-21.83-21.25-35.47l40.58-18.21c5.96,13,14.22,23.22,24.76,30.68,10.54,7.46,22.21,11.18,34.99,11.18,6.82,0,12.67-1.06,17.57-3.2,4.9-2.13,8.73-5.06,11.5-8.79,2.77-3.72,4.15-8.15,4.15-13.26,0-5.54-1.71-10.27-5.11-14.22-3.41-3.94-8.74-7.08-15.98-9.43l-46.65-15.34c-18.96-6.18-33.23-14.96-42.82-26.36-9.59-11.39-14.38-25.08-14.38-41.06,0-14.06,3.46-26.41,10.38-37.07,6.92-10.65,16.62-18.96,29.08-24.92,12.46-5.96,26.79-8.95,42.98-8.95,14.27,0,27.48,2.45,39.62,7.35,12.14,4.9,22.63,11.82,31.47,20.77,8.84,8.95,15.5,19.71,19.97,32.27l-40.26,18.21c-4.47-11.07-11.18-19.76-20.13-26.04-8.95-6.28-19.17-9.43-30.68-9.43-6.6,0-12.46,1.07-17.57,3.2-5.11,2.13-9.06,5.17-11.82,9.11-2.77,3.94-4.15,8.47-4.15,13.58,0,5.54,1.81,10.39,5.43,14.54,3.62,4.15,9.05,7.4,16.3,9.75l45.69,14.7c19.17,6.18,33.5,14.81,42.98,25.88,9.48,11.08,14.22,24.6,14.22,40.58,0,13.85-3.62,26.15-10.86,36.91-7.25,10.76-17.21,19.17-29.88,25.24-12.68,6.07-27.43,9.11-44.26,9.11Z"/>
+    <path d="M1353.11,357.13l80.52-238.05h65.82l80.52,238.05h-54l-15.98-48.57h-87.23l-15.98,48.57h-53.68ZM1436.51,265.42h59.75l-36.43-112.48h13.42l-36.75,112.48Z"/>
+    <path d="M1592.38,357.13V119.08h49.53v238.05h-49.53Z"/>
+    <path d="M1677.08,357.13V119.08h49.53v194.92h100.65v43.14h-150.18Z"/>
+  </g>
+  <path d="M313.23,224.75c-.22.03-.36.22-.33.44.6,5.27.92,10.63.92,16.06,0,79.76-66.49,143.99-147.07,140.29-71.95-3.31-130.34-61.71-133.65-133.65-3.71-80.58,60.52-147.07,140.29-147.07,59.33,0,110.07,36.79,130.64,88.81l30.64-12.11c-25.77-65.14-89.86-110.95-164.48-109.6C79.75,69.54,4.98,141.61.25,231.92c-5.24,99.99,74.28,182.71,173.13,182.71s173.37-77.62,173.37-173.37c0-6.74-.4-13.39-1.15-19.93-.02-.21-.2-.37-.42-.34-3,.35-21.94,2.59-31.95,3.77Z"/>
+  <path d="M353.55,165.3L413.5,1.18c.32-.88-.78-1.58-1.44-.92l-240.04,240.99c-.54.54.01,1.45.74,1.21l150.61-48.2c13.99-4.48,25.13-15.17,30.17-28.97Z"/></svg></span>
+          <span class="logo sm"><svg viewBox="0 0 1591.73 472.39" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Multiplier"><defs>
+    <style>
+      .cls-1 {
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path d="M288,0l-67.19,99.08V0h-34.7l-72.24,106.59V0h-29.65L0,124.13v217.73h29.65l57.88-85.15v150.42h34.7l52.68-77.64v142.91h39.75l113.24-166.7V0h-39.9Z"/>
+  <path class="cls-1" d="M511.06,268.96l-58.32-169.05h-52.8v209.12h33.42v-172.49l58.01,170.46h38.3l58.48-170.77v172.8h33.42V99.91h-52.17l-58.32,169.05ZM752.23,309.03h32.78l-.16-148.07h-32.78v80.61c0,26.77-12.93,43.51-36.88,43.51-20.02,0-29.95-11.27-29.95-34.12v-90h-32.79v94.23c0,36.16,20.96,58.07,55.17,58.07,18.91,0,34.68-6.57,44.61-22.23v18ZM846.64,99.91h-32.79v209.12h32.79V99.91ZM922.46,160.95v-55.72l-32.79,24.42v31.31h-26.48v28.17h26.48v76.23c0,33.97,17.65,47.27,49.97,47.27,4.89,0,17.97-1.1,22.85-3.13v-28.8c-4.89,1.25-13.4,2.35-17.97,2.35-14.97,0-22.07-3.76-22.07-21.91v-72h42.24v-28.17h-42.24ZM1016.88,309.03h-32.79v-147.92h32.79v147.92ZM982.67,99.91h35.47v34.44h-35.47v-34.44ZM1170.09,234.99c0,28.18-19.07,48.37-47.13,48.37s-46.81-19.41-46.81-48.37,18.76-49.46,46.81-49.46,47.13,21.29,47.13,49.46ZM1077.25,370.23l-.31-79.67c11.66,13.62,28.21,22.7,52.02,22.7,44.61,0,75.19-33.65,75.19-78.26s-30.26-79.05-75.19-79.05c-22.54,0-40.04,8.92-51.7,22.54v-17.37h-32.78v209.12h32.78ZM1256.78,99.91h-32.79v209.12h32.79V99.91ZM1285.78,309.03h32.78v-147.92h-32.78v147.92ZM1319.67,99.91h-35.46v34.44h35.46v-34.44ZM1447.34,221.37c0-22.85-13.39-37.88-36.24-37.88-19.39,0-35.16,12.21-39.09,37.88h75.33ZM1482.81,232.17c0,4.23-.32,7.98-.95,13.15h-110.33c3.47,28.17,20.33,40.38,42.87,40.38,20.8,0,34.21-8.3,42.24-26.45l23.65,20.97c-14.03,22.54-39.41,33.03-66.84,33.03-46.8,0-76.6-32.09-76.6-77.95s31.37-79.36,74.55-79.36,71.41,30.99,71.41,76.23ZM1536.41,184.43v-23.32h-32.79v147.92h32.63v-71.38c0-32.71,15.76-48.05,38.61-48.05,6.31,0,11.19.78,16.87,2.5v-32.4c-4.58-1.72-7.89-2.04-13.09-2.04-13.71,0-31.36,5.48-42.24,26.77Z"/></svg></span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

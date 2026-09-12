@@ -23,14 +23,14 @@
   body{font-family:'Domine',Georgia,serif;color:var(--cream);-webkit-font-smoothing:antialiased;
     padding:clamp(18px,3vw,34px);min-height:100vh;display:flex;align-items:center;justify-content:center}
   .wrap{position:relative;overflow:hidden;width:100%;max-width:1120px;margin:0 auto;
-    padding:clamp(30px,4.6vw,58px);border-radius:26px;
+    padding:clamp(30px,4.6vw,58px);border-radius:28px;border:1px solid rgba(253,246,235,.16);
     background:
-      radial-gradient(120% 140% at 100% 0%, rgba(238,22,79,.24), transparent 55%),
-      radial-gradient(120% 150% at 0% 100%, rgba(250,163,43,.18), transparent 52%),
-      linear-gradient(160deg,#4a0521,#3d001a 60%,#2c0013);
-    box-shadow:0 30px 80px rgba(0,0,0,.4)}
+      radial-gradient(120% 140% at 100% 0%, rgba(238,22,79,.34), transparent 55%),
+      radial-gradient(118% 150% at 0% 100%, rgba(250,163,43,.24), transparent 52%),
+      linear-gradient(160deg,#520b28,#340017 62%,#250011);
+    box-shadow:0 28px 82px rgba(0,0,0,.55), inset 0 1px 0 rgba(253,246,235,.10)}
   /* faint dot texture */
-  .wrap::before{content:"";position:absolute;inset:0;opacity:.06;pointer-events:none;
+  .wrap::before{content:"";position:absolute;inset:0;opacity:.05;pointer-events:none;
     background-image:radial-gradient(rgba(253,246,235,.9) 1px, transparent 1.4px);
     background-size:22px 22px}
 
@@ -85,7 +85,7 @@
       <div class="pic">
         <div class="frame">
           <div class="fallback">HF</div>
-          <img src="speakers/hannah.jpg" alt="Dr. Hannah Fry" onload="var f=this.previousElementSibling; if(f)f.remove();" onerror="this.remove()">
+          <img src="speakers/hannahfry_hshot.png" alt="Dr. Hannah Fry" onload="var f=this.previousElementSibling; if(f)f.remove();" onerror="this.remove()">
         </div>
       </div>
       <div class="body">

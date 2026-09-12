@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <!--
   HORIZONS 2026 — FEATURED KEYNOTE SPOTLIGHT (self-contained iframe)
-  Place directly above the Agenda section. Headshot auto-loads from
-  speakers/hannah.jpg (shared with the speakers + agenda embeds).
-  Suggested iframe height: ~540px desktop / ~880px mobile.
+  Transparent background — sits directly on the Splash wine section (no card).
+  Headshot is the transparent cutout speakers/hannahfry_hshot.png (1032x765),
+  shown at native proportions. Place directly above the Agenda.
+  Suggested iframe height: ~620px desktop / ~1240px mobile (see delivery notes).
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,31 +20,16 @@
     --grad:linear-gradient(120deg,#FAA32B,#EE164F 55%,#B0093C);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:var(--wine2)}
+  html,body{background:transparent}
   body{font-family:'Domine',Georgia,serif;color:var(--cream);-webkit-font-smoothing:antialiased;
-    padding:clamp(18px,3vw,34px);min-height:100vh;display:flex;align-items:center;justify-content:center}
-  .wrap{position:relative;overflow:hidden;width:100%;max-width:1120px;margin:0 auto;
-    padding:clamp(30px,4.6vw,58px);border-radius:28px;border:1px solid rgba(253,246,235,.16);
-    background:
-      radial-gradient(120% 140% at 100% 0%, rgba(238,22,79,.34), transparent 55%),
-      radial-gradient(118% 150% at 0% 100%, rgba(250,163,43,.24), transparent 52%),
-      linear-gradient(160deg,#520b28,#340017 62%,#250011);
-    box-shadow:0 28px 82px rgba(0,0,0,.55), inset 0 1px 0 rgba(253,246,235,.10)}
-  /* faint dot texture */
-  .wrap::before{content:"";position:absolute;inset:0;opacity:.05;pointer-events:none;
-    background-image:radial-gradient(rgba(253,246,235,.9) 1px, transparent 1.4px);
-    background-size:22px 22px}
+    padding:clamp(14px,2.6vw,28px);min-height:100vh;display:flex;align-items:center;justify-content:center}
 
-  .inner{position:relative;z-index:1;display:flex;gap:clamp(28px,4vw,54px);align-items:center}
+  .wrap{width:100%;max-width:1120px;margin:0 auto}
+  .inner{display:flex;gap:clamp(24px,4vw,56px);align-items:center}
 
-  /* portrait */
-  .pic{flex:0 0 auto;width:clamp(210px,30vw,320px);aspect-ratio:4/5;position:relative;border-radius:20px;
-    padding:5px;background:var(--grad);box-shadow:0 18px 46px rgba(0,0,0,.42)}
-  .pic .frame{position:absolute;inset:5px;border-radius:16px;overflow:hidden;background:var(--wine)}
-  .pic img{width:100%;height:100%;object-fit:cover;display:block}
-  .pic .fallback{position:absolute;inset:5px;border-radius:16px;display:grid;place-items:center;
-    font-family:'Archivo Black',sans-serif;font-size:64px;color:rgba(253,246,235,.9);
-    background:var(--wine)}
+  /* headshot — transparent cutout, native 1032x765 proportions, no frame/card */
+  .pic{flex:0 0 auto;width:clamp(290px,40vw,480px)}
+  .pic img{display:block;width:100%;height:auto}
 
   .body{flex:1 1 auto;min-width:0}
   .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'Space Mono',monospace;font-weight:700;
@@ -73,8 +59,8 @@
   .chip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--grad);flex:0 0 auto}
 
   @media (max-width:760px){
-    .inner{flex-direction:column;align-items:flex-start;text-align:left}
-    .pic{width:min(72%,260px);align-self:center}
+    .inner{flex-direction:column;align-items:flex-start}
+    .pic{width:min(86%,440px);align-self:center}
     .role,.bio,.highlight{max-width:none}
   }
 </style>
@@ -83,10 +69,7 @@
   <div class="wrap">
     <div class="inner">
       <div class="pic">
-        <div class="frame">
-          <div class="fallback">HF</div>
-          <img src="speakers/hannahfry_hshot.png" alt="Dr. Hannah Fry" onload="var f=this.previousElementSibling; if(f)f.remove();" onerror="this.remove()">
-        </div>
+        <img src="speakers/hannahfry_hshot.png" alt="Dr. Hannah Fry" onerror="this.style.display='none'">
       </div>
       <div class="body">
         <p class="eyebrow">Featured Keynote</p>

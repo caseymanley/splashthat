@@ -165,7 +165,7 @@
 
   <script>
   (function(){
-    /* ============ SPEAKERS — keynote -> HiBob (by seniority) -> guests ============
+    /* ============ SPEAKERS — keynote -> 2 HiBob leads -> guests/customers -> remaining HiBob ============
        Each has: name, title, bio, and the sessions they appear in.
        photo auto-loads from speakers/<id>.jpg (set photo:'…' to override). */
     var SPEAKERS = [
@@ -182,36 +182,6 @@
         sessions:[{t:'09:30–09:40',nm:'Welcome Address',lo:'Town Hall',role:'Host'},
                   {t:'15:45–16:30',nm:'The Fishbowl: What We Heard, What We Challenge, What Comes Next',lo:'Town Hall',role:'Host'}]},
 
-      {id:'tali', name:'Tali Chuchinsky', title:'VP, Product Marketing, HiBob',
-        bio:`VP of Product Marketing at HiBob, connecting the product vision with market positioning, go-to-market and commercial growth. Previously spent seven years at Similarweb in leadership roles across strategy, product marketing, pricing and GTM — helping scale the company from ~$40M ARR through its IPO. She began her career at Boston Consulting Group.`,
-        sessions:[{t:'09:40–10:00',nm:'The Great Redesign: People, AI & the Organisation',lo:'Town Hall',role:'In conversation'},
-                  {t:'10:00–10:25',nm:'Vision Into Action: Building the Adaptive Organisation',lo:'Town Hall',role:'Presented by'}]},
-
-      {id:'stacey', name:'Stacey Matson', title:'VP, Customer Growth, HiBob',
-        bio:`VP of Customer Growth at HiBob and an experienced SaaS leader with 20+ years building and scaling customer and commercial organisations. She is passionate about customer-led growth, high-performing teams, and cultures where commercial ambition and people-first leadership go hand in hand.`,
-        sessions:[{t:'13:20–14:20',nm:'The New Value of Work: Hello Tokens, Goodbye Salaries?',lo:'University Stage',role:'Host'}]},
-
-      {id:'rami', name:'Rami Tzafrir', title:'VP, People Growth, HiBob',
-        bio:`VP, People Growth at HiBob. Full bio coming soon.`,
-        sessions:[{t:'13:20–14:20',nm:'If You Built Your Workforce Today, Would It Look Like This?',lo:'Workshop Studio',role:'Host'}]},
-
-      {id:'ken', name:'Kenneth Matos, Ph.D.', title:'Director, Insights Lab, HiBob',
-        bio:`Director, Insights Lab at HiBob, where he researches global HR trends and employee experience. A former consultant to global organisations, he has published on inclusion, wellbeing, leadership and culture. He holds degrees from Amherst, Cornell and The George Washington University, and speaks frequently on engagement, flexibility and workplace culture.`,
-        sessions:[{t:'11:20–12:20',nm:'AI Readiness: Are You Building or Just Buying?',lo:'University Stage',role:'Host'}]},
-
-      {id:'yoni', name:'Yoni Friedman', title:'Director of Core AI, HiBob',
-        bio:`Director of Core AI at HiBob. Full bio coming soon.`,
-        sessions:[{t:'10:00–10:25',nm:'Vision Into Action: Building the Adaptive Organisation',lo:'Town Hall',role:'Presented by'}]},
-
-      {id:'adena', name:'Adena White, Ph.D.', title:'Market Insights Lead, HiBob',
-        bio:`Market Insights Lead at HiBob, researching global trends in employee experience, HR best practices and the impact of AI on the world of work. With a background spanning scientific research, business strategy and technology, she brings a strategic perspective to the future of work and speaks widely on AI, employee experience and wellbeing.`,
-        sessions:[{t:'11:20–12:20',nm:'The AI-Ready Organisation: From Skills Gaps to Workforce Advantage',lo:'Workshop',role:'Host'},
-                  {t:'15:45–16:30',nm:'The Fishbowl: What We Heard, What We Challenge, What Comes Next',lo:'Town Hall',role:'Participant'}]},
-
-      {id:'laura', name:'Laura Fink', title:'People & Culture Director, HiBob',
-        bio:`People & Culture Director at HiBob. Full bio coming soon.`,
-        sessions:[{t:'13:20–14:20',nm:'The Employment Rights Act: January Is Coming',lo:'In Good Company Café',role:'Host'}]},
-
       {id:'hayley', name:'Hayley Mann', title:'Chief People Officer, Formula E',
         bio:`Chief People Officer at Formula E, with nearly 15 years across hospitality, beauty, retail and sport. She partners with the CEO and executive team to run the people agenda through all strategy and decision-making, translating high-performance culture into how teams work — and is a passionate advocate for authentic, inclusive leadership.`,
         sessions:[{t:'13:20–14:20',nm:'The New Value of Work: Hello Tokens, Goodbye Salaries?',lo:'University Stage',role:'Speaker'}]},
@@ -226,7 +196,38 @@
 
       {id:'natalie', name:'Natalie Neilson', title:'Founder & Director, TTM Coaching',
         bio:`ICF-accredited coach, writer, facilitator, founder and co-host of The Power of You podcast. Her work bridges individual growth and organisational performance — exploring how people navigate growth, change, uncertainty and complexity, and helping organisations develop their people, performance and culture.`,
-        sessions:[{t:'11:20–12:20',nm:'Trust by Design: Where AI, Privacy & People Meet',lo:'In Good Company Café',role:'Host'}]}
+        sessions:[{t:'11:20–12:20',nm:'Trust by Design: Where AI, Privacy & People Meet',lo:'In Good Company Café',role:'Host'}]},
+
+      {id:'tali', name:'Tali Chuchinsky', title:'VP, Product Marketing, HiBob',
+        bio:`VP of Product Marketing at HiBob, connecting the product vision with market positioning, go-to-market and commercial growth. Previously spent seven years at Similarweb in leadership roles across strategy, product marketing, pricing and GTM — helping scale the company from ~$40M ARR through its IPO. She began her career at Boston Consulting Group.`,
+        sessions:[{t:'09:40–10:00',nm:'The Great Redesign: People, AI & the Organisation',lo:'Town Hall',role:'In conversation'},
+                  {t:'10:00–10:25',nm:'Vision Into Action: Building the Adaptive Organisation',lo:'Town Hall',role:'Presented by'}]},
+
+      {id:'stacey', name:'Stacey Matson', title:'VP, Customer Growth, HiBob',
+        bio:`VP of Customer Growth at HiBob and an experienced SaaS leader with 20+ years building and scaling customer and commercial organisations. She is passionate about customer-led growth, high-performing teams, and cultures where commercial ambition and people-first leadership go hand in hand.`,
+        sessions:[{t:'13:20–14:20',nm:'The New Value of Work: Hello Tokens, Goodbye Salaries?',lo:'University Stage',role:'Host'}]},
+
+      {id:'ken', name:'Kenneth Matos, Ph.D.', title:'Director, Insights Lab, HiBob',
+        bio:`Director, Insights Lab at HiBob, where he researches global HR trends and employee experience. A former consultant to global organisations, he has published on inclusion, wellbeing, leadership and culture. He holds degrees from Amherst, Cornell and The George Washington University, and speaks frequently on engagement, flexibility and workplace culture.`,
+        sessions:[{t:'11:20–12:20',nm:'AI Readiness: Are You Building or Just Buying?',lo:'University Stage',role:'Host'}]},
+
+      {id:'adena', name:'Adena White, Ph.D.', title:'Market Insights Lead, HiBob',
+        bio:`Market Insights Lead at HiBob, researching global trends in employee experience, HR best practices and the impact of AI on the world of work. With a background spanning scientific research, business strategy and technology, she brings a strategic perspective to the future of work and speaks widely on AI, employee experience and wellbeing.`,
+        sessions:[{t:'11:20–12:20',nm:'The AI-Ready Organisation: From Skills Gaps to Workforce Advantage',lo:'Workshop',role:'Host'},
+                  {t:'15:45–16:30',nm:'The Fishbowl: What We Heard, What We Challenge, What Comes Next',lo:'Town Hall',role:'Participant'}]},
+
+      {id:'yoni', name:'Yoni Friedman', title:'Director of Core AI, HiBob',
+        bio:`Director of Core AI at HiBob. Full bio coming soon.`,
+        sessions:[{t:'10:00–10:25',nm:'Vision Into Action: Building the Adaptive Organisation',lo:'Town Hall',role:'Presented by'}]},
+
+      {id:'laura', name:'Laura Fink', title:'People & Culture Director, HiBob',
+        bio:`People & Culture Director at HiBob. Full bio coming soon.`,
+        sessions:[{t:'13:20–14:20',nm:'The Employment Rights Act: January Is Coming',lo:'In Good Company Café',role:'Host'}]},
+
+      {id:'rami', name:'Rami Tzafrir', title:'VP, People Growth, HiBob',
+        bio:`VP, People Growth at HiBob. Full bio coming soon.`,
+        sessions:[{t:'13:20–14:20',nm:'If You Built Your Workforce Today, Would It Look Like This?',lo:'Workshop Studio',role:'Host'}]}
+
     ];
 
     /* headshots: speakers/<id>.jpg (shared with the agenda), initials fallback */

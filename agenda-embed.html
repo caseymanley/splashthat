@@ -78,7 +78,7 @@
   }
   .card:hover,.card:focus-visible{transform:translateY(-6px);outline:none}
   .card .time{font-family:'Space Mono',monospace;font-weight:700;font-size:12.5px;
-    letter-spacing:.04em;color:var(--wine2)}
+    letter-spacing:.16em;color:var(--wine2)}
   .card .loc{display:inline-flex;align-items:center;gap:5px;margin-top:9px;
     font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.09em;
     text-transform:uppercase;color:#7a5a48}
@@ -86,8 +86,21 @@
     background:var(--cocoa)}
   .card h3{margin:13px 0 0;font-family:'Archivo Black',sans-serif;text-transform:uppercase;
     font-size:1.18rem;line-height:1.06;letter-spacing:.005em}
-  .card .teaser{margin:10px 0 0;font-size:13.5px;line-height:1.45;color:#4a3540;flex:1}
-  .card .foot{margin-top:15px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .card .teaser{margin:10px 0 0;font-size:13.5px;line-height:1.45;color:#4a3540}
+  .card .foot{margin-top:auto;padding-top:14px;display:flex;align-items:center;justify-content:flex-end;gap:10px}
+  .card .spk-list{display:flex;flex-direction:column;gap:9px;margin-top:15px}
+  .card .spk{display:flex;align-items:center;gap:11px}
+  .card .spk .sav{width:40px;height:40px;border-radius:50%;flex:0 0 auto;border:2px solid var(--cream);
+    position:relative;overflow:hidden;display:grid;place-items:center;background:var(--grad);
+    font-family:'Space Mono',monospace;font-weight:700;font-size:12px;color:var(--cream)}
+  .card .spk .sav img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .card .spk .si{min-width:0}
+  .card .spk .si .nm{display:block;font-family:'Archivo Black',sans-serif;text-transform:uppercase;
+    font-size:11.5px;letter-spacing:.01em;line-height:1.1;color:var(--ink)}
+  .card .spk .si .rl{display:block;margin-top:3px;font-family:'Space Mono',monospace;font-size:9px;
+    letter-spacing:.02em;line-height:1.3;color:#7a5a48}
+  .card .spk-more{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.08em;
+    text-transform:uppercase;color:#9a7a68;padding-left:51px}
   .card .avs{display:flex}
   .card .avs .av{width:30px;height:30px;border-radius:50%;margin-left:-8px;
     border:2px solid var(--cream);display:grid;place-items:center;
@@ -142,7 +155,7 @@
   .tray-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:4px 6px 0}
   .tray-head .k{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:1rem;
     letter-spacing:.02em;color:var(--cream);line-height:1}
-  .tray-head .tm{font-family:'Space Mono',monospace;font-size:10.5px;color:rgba(253,246,235,.7);margin-top:4px}
+  .tray-head .tm{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:rgba(253,246,235,.7);margin-top:4px}
   .tray-head .ch{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;
     color:var(--sand);background:rgba(253,246,235,.12);padding:6px 11px;border-radius:20px;white-space:nowrap}
   .tray-cards{display:flex;gap:13px;align-items:stretch;flex:1}
@@ -176,7 +189,7 @@
   .pop .close:hover{background:var(--wine);color:var(--cream)}
 
   .pop .tabs{display:flex;gap:6px;padding:20px 28px 0;flex:0 0 auto}
-  .pop .tab{font-family:'Space Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.1em;
+  .pop .tab{font-family:'Archivo Black',sans-serif;font-size:11.5px;letter-spacing:.045em;
     text-transform:uppercase;padding:11px 16px;border-radius:10px 10px 0 0;border:none;cursor:pointer;
     background:transparent;color:#8a6b58;position:relative;transition:color .18s}
   .pop .tab[aria-selected="true"]{color:var(--wine)}
@@ -353,7 +366,7 @@
         speakers:[{id:'ken',badge:'Host'},{id:'robert',badge:'Panelist'}],
         more:`More panelists to be announced soon.`},
 
-      {type:'breakout', id:'ai-ready-org', time:'11:20–12:20', title:'The AI-Ready Organisation: From Skills Gaps to Workforce Advantage', loc:'Workshop',
+      {type:'breakout', id:'ai-ready-org', time:'11:20–12:20', title:'The AI-Ready Organisation: From Skills Gaps to Workforce Advantage', loc:'Workshop Studio',
         teaser:`What real AI readiness looks like — from skills gaps to a shared view of capability.`,
         desc:`Most organisations are investing in AI. Far fewer know whether their workforce is actually ready for it. As new tools, roles and expectations emerge, leaders need a clearer view of the skills they have, the capabilities they need, and where the biggest gaps sit. This session explores what real AI readiness looks like, and how organisations can move from fragmented experimentation to a shared, actionable view of workforce capability.`,
         gains:[`A practical way to define AI readiness in clear, observable terms — beyond broad labels like "AI skills" or "AI literacy"`,
@@ -466,17 +479,23 @@
     var down=false,sx=0,sl=0,dragMoved=false;
     function makeCard(x){
       var trk = x.type==='breakout' ? (TRACK[x.loc]||'#EE164F') : null;
-      var avs='';
+      var spk='';
       if(x.speakers && x.speakers.length){
-        var shown=x.speakers.slice(0,3).map(function(sp){return avatar(sp.id,'av');}).join('');
-        if(x.more) shown+='<span class="av more">+</span>';
-        avs='<div class="avs">'+shown+'</div>';
+        var rows=x.speakers.slice(0,2).map(function(sp){
+          var s=S[sp.id]; if(!s) return '';
+          return '<div class="spk">'+avatar(sp.id,'sav')+
+            '<div class="si"><span class="nm">'+esc(s.name)+'</span><span class="rl">'+esc(s.role)+'</span></div></div>';
+        }).join('');
+        var n=x.speakers.length, extra='';
+        if(n>2) extra='<div class="spk-more">+ '+(n-2)+' more</div>';
+        else if(x.more) extra='<div class="spk-more">+ more to come</div>';
+        spk='<div class="spk-list">'+rows+extra+'</div>';
       }
       var cls='card '+x.type+(x.feature?' feature':'');
       var node=el('<button class="'+cls+'" data-id="'+x.id+'" role="listitem"'+(trk?' style="--trk:'+trk+'"':'')+'>'+
         '<div class="time">'+x.time+'</div><h3>'+esc(x.title)+'</h3>'+
         '<div class="teaser">'+esc(x.teaser)+'</div><div class="loc">'+esc(x.loc)+'</div>'+
-        '<div class="foot">'+avs+'<span class="go">Details <span>&rarr;</span></span></div></button>');
+        spk+'<div class="foot"><span class="go">Details <span>&rarr;</span></span></div></button>');
       node.addEventListener('click',function(){ if(dragMoved){dragMoved=false;return;} open(x); });
       return node;
     }

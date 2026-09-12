@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  HORIZONS 2026 — FEATURED KEYNOTE SPOTLIGHT (self-contained iframe)
+  Place directly above the Agenda section. Headshot auto-loads from
+  speakers/hannah.jpg (shared with the speakers + agenda embeds).
+  Suggested iframe height: ~540px desktop / ~880px mobile.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Domine:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FDF6EB; --sand:#F7E7CE; --wine:#60032A; --wine2:#3D001A;
+    --cherry:#EE164F; --orange:#FAA32B; --cocoa:#B0093C; --ink:#1C0510;
+    --grad:linear-gradient(120deg,#FAA32B,#EE164F 55%,#B0093C);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--wine2)}
+  body{font-family:'Domine',Georgia,serif;color:var(--cream);-webkit-font-smoothing:antialiased;
+    padding:clamp(18px,3vw,34px);min-height:100vh;display:flex;align-items:center;justify-content:center}
+  .wrap{position:relative;overflow:hidden;width:100%;max-width:1120px;margin:0 auto;
+    padding:clamp(30px,4.6vw,58px);border-radius:26px;
+    background:
+      radial-gradient(120% 140% at 100% 0%, rgba(238,22,79,.24), transparent 55%),
+      radial-gradient(120% 150% at 0% 100%, rgba(250,163,43,.18), transparent 52%),
+      linear-gradient(160deg,#4a0521,#3d001a 60%,#2c0013);
+    box-shadow:0 30px 80px rgba(0,0,0,.4)}
+  /* faint dot texture */
+  .wrap::before{content:"";position:absolute;inset:0;opacity:.06;pointer-events:none;
+    background-image:radial-gradient(rgba(253,246,235,.9) 1px, transparent 1.4px);
+    background-size:22px 22px}
+
+  .inner{position:relative;z-index:1;display:flex;gap:clamp(28px,4vw,54px);align-items:center}
+
+  /* portrait */
+  .pic{flex:0 0 auto;width:clamp(210px,30vw,320px);aspect-ratio:4/5;position:relative;border-radius:20px;
+    padding:5px;background:var(--grad);box-shadow:0 18px 46px rgba(0,0,0,.42)}
+  .pic .frame{position:absolute;inset:5px;border-radius:16px;overflow:hidden;background:var(--wine)}
+  .pic img{width:100%;height:100%;object-fit:cover;display:block}
+  .pic .fallback{position:absolute;inset:5px;border-radius:16px;display:grid;place-items:center;
+    font-family:'Archivo Black',sans-serif;font-size:64px;color:rgba(253,246,235,.9);
+    background:var(--wine)}
+
+  .body{flex:1 1 auto;min-width:0}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:'Space Mono',monospace;font-weight:700;
+    font-size:12px;letter-spacing:.24em;text-transform:uppercase;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .eyebrow::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--grad);
+    -webkit-text-fill-color:initial}
+  .name{margin-top:12px;font-family:'Archivo Black',sans-serif;text-transform:uppercase;
+    font-size:clamp(30px,5vw,52px);line-height:.98;letter-spacing:.004em;color:var(--cream)}
+  .role{margin-top:12px;font-family:'Space Mono',monospace;font-size:12.5px;line-height:1.5;
+    letter-spacing:.03em;color:var(--sand);text-transform:uppercase;max-width:44ch}
+  .bio{margin-top:18px;font-size:clamp(15px,1.5vw,16.5px);line-height:1.62;color:rgba(253,246,235,.92);
+    max-width:60ch}
+  .bio em{font-style:italic;color:var(--cream)}
+
+  .highlight{margin-top:22px;position:relative;padding:16px 18px 16px 22px;border-radius:14px;
+    background:rgba(253,246,235,.06);border:1px solid rgba(253,246,235,.12);max-width:60ch}
+  .highlight::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:4px;
+    background:var(--grad)}
+  .hlabel{font-family:'Space Mono',monospace;font-weight:700;font-size:10.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--orange)}
+  .htext{margin-top:7px;font-size:14.5px;line-height:1.55;color:rgba(253,246,235,.94)}
+
+  .chip{margin-top:20px;display:inline-flex;align-items:center;gap:9px;padding:9px 16px;border-radius:30px;
+    background:rgba(253,246,235,.08);border:1px solid rgba(253,246,235,.16);
+    font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.06em;color:var(--cream)}
+  .chip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--grad);flex:0 0 auto}
+
+  @media (max-width:760px){
+    .inner{flex-direction:column;align-items:flex-start;text-align:left}
+    .pic{width:min(72%,260px);align-self:center}
+    .role,.bio,.highlight{max-width:none}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="inner">
+      <div class="pic">
+        <div class="frame">
+          <div class="fallback">HF</div>
+          <img src="speakers/hannah.jpg" alt="Dr. Hannah Fry" onload="var f=this.previousElementSibling; if(f)f.remove();" onerror="this.remove()">
+        </div>
+      </div>
+      <div class="body">
+        <p class="eyebrow">Featured Keynote</p>
+        <h2 class="name">Dr.&nbsp;Hannah&nbsp;Fry</h2>
+        <p class="role">Mathematician, Broadcaster &amp; Professor for the Public Understanding of Mathematics · University of Cambridge</p>
+        <p class="bio">Dr. Hannah Fry is a mathematician, broadcaster and professor for the Public Understanding of Mathematics at University of Cambridge, known for bringing complex ideas about technology, human behaviour and mathematics to life with wit, warmth and clarity. Her work includes the Emmy Award-winning <em>The Future with Hannah Fry</em>, BBC&rsquo;s <em>AI Confidential with Hannah Fry</em> and <em>The Secret Genius of Modern Life</em>, as well as the bestselling book <em>Hello World: How to Be Human in the Age of the Machine</em>.</p>
+        <div class="highlight">
+          <p class="hlabel">Session Highlight</p>
+          <p class="htext">At Horizons, Hannah will explore the human side of our rapidly changing relationship with AI and technology, bringing her distinctive perspective on how new systems are shaping the way we think, make decisions and work.</p>
+        </div>
+        <span class="chip">14:55–15:40 · Closing Keynote · Town Hall</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

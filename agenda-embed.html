@@ -23,7 +23,7 @@
 <title>Horizons 2026 — Agenda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Domine:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600&family=Domine:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --wine:#3D001A; --wine2:#60032A; --cherry:#EE164F; --orange:#FAA32B;
@@ -70,7 +70,7 @@
   .card{
     scroll-snap-align:start;flex:0 0 auto;width:300px;
     display:flex;flex-direction:column;
-    border-radius:18px;padding:22px 22px 18px;position:relative;overflow:hidden;
+    border-radius:18px;padding:18px 20px 15px;position:relative;overflow:hidden;
     background:var(--cream);color:var(--ink);
     border:none;-webkit-appearance:none;appearance:none;margin:0;
     transition:transform .18s cubic-bezier(.16,1,.3,1);
@@ -79,26 +79,26 @@
   .card:hover,.card:focus-visible{transform:translateY(-6px);outline:none}
   .card .time{font-family:'Space Mono',monospace;font-weight:700;font-size:12.5px;
     letter-spacing:.16em;color:var(--wine2)}
-  .card .loc{display:inline-flex;align-items:center;gap:5px;margin-top:9px;
+  .card .loc{display:inline-flex;align-items:center;gap:5px;margin-top:7px;
     font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.09em;
     text-transform:uppercase;color:#7a5a48}
   .card .loc::before{content:"";width:7px;height:7px;border-radius:2px;transform:rotate(45deg);
     background:var(--cocoa)}
-  .card h3{margin:13px 0 0;font-family:'Archivo Black',sans-serif;text-transform:uppercase;
-    font-size:1.18rem;line-height:1.06;letter-spacing:.005em}
-  .card .teaser{margin:10px 0 0;font-size:13.5px;line-height:1.45;color:#4a3540}
-  .card .foot{margin-top:auto;padding-top:14px;display:flex;align-items:center;justify-content:flex-end;gap:10px}
-  .card .spk-list{display:flex;flex-direction:column;gap:9px;margin-top:15px}
-  .card .spk{display:flex;align-items:center;gap:11px}
-  .card .spk .sav{width:40px;height:40px;border-radius:50%;flex:0 0 auto;border:2px solid var(--cream);
+  .card h3{margin:10px 0 0;font-family:'Archivo Black',sans-serif;text-transform:uppercase;
+    font-size:1.28rem;line-height:1.02;letter-spacing:.004em}
+  .card .teaser{margin:8px 0 0;font-size:13px;line-height:1.38;color:#4a3540}
+  .card .foot{margin-top:auto;padding-top:10px;display:flex;align-items:center;justify-content:flex-end;gap:10px}
+  .card .spk-list{display:flex;flex-direction:column;gap:7px;margin-top:11px}
+  .card .spk{display:flex;align-items:center;gap:10px}
+  .card .spk .sav{width:34px;height:34px;border-radius:50%;flex:0 0 auto;border:2px solid var(--cream);
     position:relative;overflow:hidden;display:grid;place-items:center;background:var(--grad);
-    font-family:'Space Mono',monospace;font-weight:700;font-size:12px;color:var(--cream)}
+    font-family:'Space Mono',monospace;font-weight:700;font-size:11px;color:var(--cream)}
   .card .spk .sav img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .card .spk .si{min-width:0}
   .card .spk .si .nm{display:block;font-family:'Archivo Black',sans-serif;text-transform:uppercase;
     font-size:11.5px;letter-spacing:.01em;line-height:1.1;color:var(--ink)}
-  .card .spk .si .rl{display:block;margin-top:3px;font-family:'Space Mono',monospace;font-size:9px;
-    letter-spacing:.02em;line-height:1.3;color:#7a5a48}
+  .card .spk .si .rl{display:block;margin-top:3px;font-family:'Archivo','Helvetica Neue',Arial,sans-serif;font-weight:500;font-size:11px;
+    letter-spacing:0;line-height:1.3;color:#7a5a48}
   .card .spk-more{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.08em;
     text-transform:uppercase;color:#9a7a68;padding-left:51px}
   .card .avs{display:flex}
@@ -225,7 +225,7 @@
     line-height:1.05;color:var(--ink);display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
   .spk .badge{font-family:'Space Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:.1em;
     text-transform:uppercase;padding:3px 8px;border-radius:20px;background:var(--wine);color:var(--cream)}
-  .spk .rl{margin:5px 0 0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.03em;
+  .spk .rl{margin:5px 0 0;font-family:'Archivo','Helvetica Neue',Arial,sans-serif;font-weight:500;font-size:13.5px;letter-spacing:0;
     color:var(--cocoa)}
   .spk .bio{margin:10px 0 0;font-size:13.5px;line-height:1.55;color:#3a2732;max-width:62ch}
 
@@ -234,7 +234,7 @@
     .controls{padding:14px 16px 0}
     .nav .arrow{width:40px;height:40px}
     .rail{gap:12px;padding:16px 16px 20px;scroll-snap-type:x mandatory}
-    .card{width:80vw;max-width:320px;padding:20px}
+    .card{width:80vw;max-width:330px;padding:16px 18px}
     .card.feature{width:82vw}
     .brk{width:74px}.tray{padding:12px}.tray .card{width:78vw;max-width:320px}
     .pop .head{padding:20px 20px 0}
@@ -308,9 +308,9 @@
         bio:`VP of Customer Growth at HiBob and an experienced SaaS leader with 20+ years building and scaling customer and commercial organisations. She is passionate about customer-led growth, high-performing teams, and cultures where commercial ambition and people-first leadership go hand in hand.`},
       hayley:{name:'Hayley Mann', role:'Chief People Officer, Formula E', photo:null,
         bio:`Chief People Officer at Formula E, with nearly 15 years across hospitality, beauty, retail and sport. She partners with the CEO and executive team to run the people agenda through all strategy and decision-making, translating high-performance culture into how teams work — and is a passionate advocate for authentic, inclusive leadership.`},
-      rami:  {name:'Rami Tzafrir', role:'VP, People Growth, HiBob', photo:null,
+      rami:  {name:'Rami Tzafrir', role:'VP, People Growth, HiBob', photo:'speakers/rami.png',
         bio:`VP, People Growth at HiBob. Full bio coming soon.`},
-      laura: {name:'Laura Fink', role:'People & Culture Director, HiBob', photo:null,
+      laura: {name:'Laura Fink', role:'People & Culture Director, HiBob', photo:'speakers/laura.png',
         bio:`People & Culture Director at HiBob. Full bio coming soon.`},
       hannah:{name:'Dr. Hannah Fry', role:'Mathematician, Broadcaster & Professor, University of Cambridge', photo:null,
         bio:`Mathematician, broadcaster and Professor for the Public Understanding of Mathematics at the University of Cambridge. She studies patterns in human behaviour and brings complex ideas to life with her signature wit and warmth. Her work includes the Emmy-winning The Future with Hannah Fry (Bloomberg) and AI Confidential with Hannah Fry (BBC Two), and she is the author of Hello World: How to Be Human in the Age of the Machine.`}
@@ -412,7 +412,6 @@
         gains:[`A clear view of what changes on 1 January and what it means for employers`,
                `Practical guidance on strengthening probation and early-tenure performance management`,
                `Key areas to review in contracts, policies and dismissal processes`,
-               `A framework for setting and documenting clear performance expectations before issues arise`,
                `Practical actions HR teams can take now, rather than scrambling in January`],
         speakers:[{id:'laura',badge:'Host'}],
         more:`Speakers to be announced soon.`},
@@ -481,7 +480,12 @@
       var trk = x.type==='breakout' ? (TRACK[x.loc]||'#EE164F') : null;
       var spk='';
       if(x.speakers && x.speakers.length){
-        var rows=x.speakers.slice(0,2).map(function(sp){
+        var ordered=x.speakers.slice().sort(function(a,b){
+          var ah=(S[a.id]&&/HiBob/i.test(S[a.id].role))?1:0;
+          var bh=(S[b.id]&&/HiBob/i.test(S[b.id].role))?1:0;
+          return ah-bh;
+        });
+        var rows=ordered.slice(0,2).map(function(sp){
           var s=S[sp.id]; if(!s) return '';
           return '<div class="spk">'+avatar(sp.id,'sav')+
             '<div class="si"><span class="nm">'+esc(s.name)+'</span><span class="rl">'+esc(s.role)+'</span></div></div>';

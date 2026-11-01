@@ -38,6 +38,12 @@
   .tier.gold .logo{min-width:0}
   .logo.gold img,.logo.sm img{height:clamp(21px,2.2vw,28px);max-width:100%}
   .logo.sm img{max-width:132px}
+  /* Fine-tune each mark so its lettering shares the same visual baseline. */
+  .tier.gold .logo:nth-child(1) img{height:clamp(17.5px,1.84vw,23px)} /* Pebl: 8% smaller */
+  .tier.gold .logo:nth-child(3){transform:translateY(6px)} /* Multiplier */
+  .tier.gold .logo:nth-child(4){transform:translateY(18%)} /* Remote */
+  .tier.silver .logo:nth-child(1){transform:translateY(3px)} /* Quinyx */
+  .tier.silver .logo:nth-child(2) img{height:clamp(16.2px,1.71vw,21.6px)} /* Happl: 10% smaller */
   @media (max-width:760px){
     body{overflow:auto} .stage{height:auto;min-height:0} .wrap{grid-template-columns:1fr;gap:24px;padding:34px 24px}
     .ticket{padding:24px 32px} .logos{gap:18px 24px} .tier.gold .logos{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 22px} .logo.gold img{max-width:120px}

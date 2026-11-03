@@ -42,11 +42,37 @@
   .tier.gold .logo:nth-child(1) img{height:clamp(17.5px,1.84vw,23px)} /* Pebl: 8% smaller */
   .tier.gold .logo:nth-child(3){transform:translateY(6px)} /* Multiplier */
   .tier.gold .logo:nth-child(4){transform:translateY(18%)} /* Remote */
+  .logo img[alt="Remote"]{content:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzE4IiBoZWlnaHQ9IjEzMSIgdmlld0JveD0iMCAwIDcxOCAxMzEiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0wIDEyOS4zNTVINjMuMjUyMVY1Ny40NzYxTDUwLjEwNjggNjQuNTIzOEg5MS4yMTA2VjEuNjM2MjNINjMuMjUyMUMyNy44ODEyIDEuNjM2MjMgMCAzMC4xMjUxIDAgNjUuNDk1OFYxMjkuMzU1WiIgZmlsbD0iIzBGMTkyMiIvPgo8cGF0aCBkPSJNMTU0LjM4MSAxMjkuMzU0SDE3NS4zMzZWODYuOTQ2NkgyMTkuMDU5VjY0LjY3N0MyMTkuMDU5IDI4Ljk4NTkgMTkwLjA3MyAwIDE1NC4zODEgMEMxMTguNjkgMCA4OS43MDQxIDI4Ljk4NTkgODkuNzA0MSA2NC42NzdDODkuNzA0MSAxMDAuMzY4IDExOC42OSAxMjkuMzU0IDE1NC4zODEgMTI5LjM1NFoiIGZpbGw9IiMwRjE5MjIiLz4KPHBhdGggZD0iTTIxNy44OCAxMjkuMzU0SDM3MS42MzVWNDMuMzkwNUMzNzEuNjM1IDE5LjY1MTYgMzUxLjk4NCAwIDMyOC4wNzkgMEMzMDQuMTc2IDAgMjg0LjUyNCAxOS42NTE2IDI4NC41MjQgNDMuMzkwNUgzMDQuOTkzQzMwNC45OTMgMTkuNjUxNiAyODUuMzQxIDAgMjYxLjQzNyAwQzIzNy41MzIgMCAyMTcuODggMTkuNjUxNiAyMTcuODggNDMuMzkwNVYxMjkuMzU0WiIgZmlsbD0iIzBGMTkyMiIvPgo8cGF0aCBkPSJNNDM1LjgxMSAxMzFDNDcyIDEzMSA1MDEuMzA2IDEwMS42OTQgNTAxLjMwNiA2NS41MDU2QzUwMS4zMDYgMjkuMzE3MyA0NzIgMCA0MzUuODExIDBDMzk5LjYyNCAwIDM3MC4zMTYgMjkuMzA2MyAzNzAuMzE2IDY1LjQ5NDRDMzcwLjMxNiAxMDEuNjgzIDM5OS42MjQgMTMwLjk4OSA0MzUuODExIDEzMC45ODlWMTMxWiIgZmlsbD0iIzBGMTkyMiIvPgo8cGF0aCBkPSJNNTYyLjQ3IDEyOS4zNjZINTg5LjgyMVYyOC4xMDI3SDU0OC43MTdMNTYxLjg2MiA3My41MjU4VjEuNjQ2NDhINDk4LjYxVjY1LjUwNjJDNDk4LjYxIDEwMC44NzcgNTI3LjA5OCAxMjkuMzY2IDU2Mi40NyAxMjkuMzY2WiIgZmlsbD0iIzBGMTkyMiIvPgo8cGF0aCBkPSJNNjUyLjk2OSAxMjkuMzY1SDY3NS4xMjhWODYuOTU3OEg3MTcuNjQ3VjY0LjY4ODFDNzE3LjY1NyAyOC45OTY5IDY4OC42NzEgMCA2NTIuOTY5IDBDNjE3LjI2NyAwIDU4OC4yOTIgMjguOTg1OSA1ODguMjkyIDY0LjY3N0M1ODguMjkyIDEwMC4zNjggNjE3LjI3OCAxMjkuMzU0IDY1Mi45NjkgMTI5LjM1NFYxMjkuMzY1WiIgZmlsbD0iIzBGMTkyMiIvPgo8L3N2Zz4K")}
+  /* Direct, visible logo adjustments for the Gold row. */
+  .tier.gold .logo:nth-child(2){transform:translateX(-18px)} /* Perk closer to Pebl */
+  .tier.gold .logo:nth-child(3){position:relative;left:-40px!important;transform:translateY(6px)!important} /* Multiplier closer to Perk */
+  .tier.gold .logo:nth-child(4){position:relative;left:35px!important;transform:translateY(-7px)!important} /* Remote further from Multiplier */
+  .tier.gold .logo:nth-child(4) img{content:normal;width:clamp(112px,10.8vw,131px);height:auto!important;aspect-ratio:718/131} /* Remote 10% smaller */
+  /* Final Gold row: explicit visible gaps matching the supplied reference. */
+  .tier.gold .logos{display:flex!important;flex-wrap:nowrap!important;justify-content:flex-start!important;align-items:center!important;gap:0!important}
+  .tier.gold .logo:nth-child(2){margin-left:85px!important;transform:none!important}
+  .tier.gold .logo:nth-child(3){position:relative;left:auto!important;margin-left:90px!important;transform:translateY(6px)!important}
+  .tier.gold .logo:nth-child(4){position:relative;left:auto!important;margin-left:70px!important;transform:translateY(7px)!important}
+  .tier.gold .logo:nth-child(4) img{width:clamp(103px,9.94vw,120.5px)!important;height:auto!important} /* Remote 8% smaller */
   .tier.silver .logo:nth-child(1){transform:translateY(3px)} /* Quinyx */
   .tier.silver .logo:nth-child(2) img{height:clamp(16.2px,1.71vw,21.6px)} /* Happl: 10% smaller */
   @media (max-width:760px){
     body{overflow:auto} .stage{height:auto;min-height:0} .wrap{grid-template-columns:1fr;gap:24px;padding:34px 24px}
-    .ticket{padding:24px 32px} .logos{gap:18px 24px} .tier.gold .logos{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 22px} .logo.gold img{max-width:120px}
+    .ticket{padding:24px 32px} .logos{gap:18px 24px} .tier.gold .logos{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 22px} .tier.gold .logo:nth-child(2){transform:none} .tier.gold .logo:nth-child(3),.tier.gold .logo:nth-child(4){left:auto!important} .logo.gold img{max-width:120px}
+    .tier.gold .logos{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 22px!important}
+    .tier.gold .logo:nth-child(2),.tier.gold .logo:nth-child(3),.tier.gold .logo:nth-child(4){margin-left:0!important}
+  }
+  /* Exact supplied Gold sponsor row — one SVG, no individual-logo positioning. */
+  .tier.gold .logos{
+    display:block!important;
+    width:100%!important;
+    height:52px!important;
+    margin:0!important;
+    background:url('Logos row updated.svg') left center / min(100%,620px) auto no-repeat!important;
+  }
+  .tier.gold .logos > .logo{display:none!important}
+  @media (max-width:760px){
+    .tier.gold .logos{height:clamp(32px,8.3vw,52px)!important;background-size:100% auto!important}
   }
 </style>
 </head>
@@ -84,5 +110,11 @@
       </div>
     </div>
   </div>
+  <script>
+    (function () {
+      var remoteLogo = document.querySelector('img[alt="Remote"]');
+      if (remoteLogo) remoteLogo.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzE4IiBoZWlnaHQ9IjEzMSIgdmlld0JveD0iMCAwIDcxOCAxMzEiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0wIDEyOS4zNTVINjMuMjUyMVY1Ny40NzYxTDUwLjEwNjggNjQuNTIzOEg5MS4yMTA2VjEuNjM2MjNINjMuMjUyMUMyNy44ODEyIDEuNjM2MjMgMCAzMC4xMjUxIDAgNjUuNDk1OFYxMjkuMzU1WiIgZmlsbD0iIzBGMTkyMiIvPgo8cGF0aCBkPSJNMTU0LjM4MSAxMjkuMzU0SDE3NS4zMzZWODYuOTQ2NkgyMTkuMDU5VjY0LjY3N0MyMTkuMDU5IDI4Ljk4NTkgMTkwLjA3MyAwIDE1NC4zODEgMEMxMTguNjkgMCA4OS43MDQxIDI4Ljk4NTkgODkuNzA0MSA2NC42NzdDODkuNzA0MSAxMDAuMzY4IDExOC42OSAxMjkuMzU0IDE1NC4zODEgMTI5LjM1NFoiIGZpbGw9IiMwRjE5MjIiLz4KPHBhdGggZD0iTTIxNy44OCAxMjkuMzU0SDM3MS42MzVWNDMuMzkwNUMzNzEuNjM1IDE5LjY1MTYgMzUxLjk4NCAwIDMyOC4wNzkgMEMzMDQuMTc2IDAgMjg0LjUyNCAxOS42NTE2IDI4NC41MjQgNDMuMzkwNUgzMDQuOTkzQzMwNC45OTMgMTkuNjUxNiAyODUuMzQxIDAgMjYxLjQzNyAwQzIzNy41MzIgMCAyMTcuODggMTkuNjUxNiAyMTcuODggNDMuMzkwNVYxMjkuMzU0WiIgZmlsbD0iIzBGMTkyMiIvPgo8cGF0aCBkPSJNNDM1LjgxMSAxMzFDNDcyIDEzMSA1MDEuMzA2IDEwMS42OTQgNTAxLjMwNiA2NS41MDU2QzUwMS4zMDYgMjkuMzE3MyA0NzIgMCA0MzUuODExIDBDMzk5LjYyNCAwIDM3MC4zMTYgMjkuMzA2MyAzNzAuMzE2IDY1LjQ5NDRDMzcwLjMxNiAxMDEuNjgzIDM5OS42MjQgMTMwLjk4OSA0MzUuODExIDEzMC45ODlWMTMxWiIgZmlsbD0iIzBGMTkyMiIvPgo8cGF0aCBkPSJNNTYyLjQ3IDEyOS4zNjZINTg5LjgyMVYyOC4xMDI3SDU0OC43MTdMNTYxLjg2MiA3My41MjU4VjEuNjQ2NDhINDk4LjYxVjY1LjUwNjJDNDk4LjYxIDEwMC44NzcgNTI3LjA5OCAxMjkuMzY2IDU2Mi40NyAxMjkuMzY2WiIgZmlsbD0iIzBGMTkyMiIvPgo8cGF0aCBkPSJNNjUyLjk2OSAxMjkuMzY1SDY3NS4xMjhWODYuOTU3OEg3MTcuNjQ3VjY0LjY4ODFDNzE3LjY1NyAyOC45OTY5IDY4OC42NzEgMCA2NTIuOTY5IDBDNjE3LjI2NyAwIDU4OC4yOTIgMjguOTg1OSA1ODguMjkyIDY0LjY3N0M1ODguMjkyIDEwMC4zNjggNjE3LjI3OCAxMjkuMzU0IDY1Mi45NjkgMTI5LjM1NFYxMjkuMzY1WiIgZmlsbD0iIzBGMTkyMiIvPgo8L3N2Zz4K';
+    }());
+  </script>
 </body>
 </html>
